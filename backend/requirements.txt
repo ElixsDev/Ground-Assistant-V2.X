@@ -1,0 +1,3 @@
+processnamer
+ogn-client
+mysql-connector-python
