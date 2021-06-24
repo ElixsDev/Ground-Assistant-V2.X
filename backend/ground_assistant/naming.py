@@ -2,8 +2,8 @@
 
 class NameDB:
     def __init__(self):
-        global os, ctime, log, config, db
-        import os
+        global os, sys, ctime, log, config, db, dbc
+        import os, sys
         from time import ctime
         from ground_assistant.load import load
 
@@ -11,6 +11,7 @@ class NameDB:
 
         config = load(path)                                                #Settings are beeing loaded from configfile and MySQL is beeing prepared
         db = load.db                                                       #Transfer sql object
+        dbc = db.cursor()
 
         if config[1] == "console":                                         #Redirect output to console
             log = sys.stderr
@@ -22,10 +23,64 @@ class NameDB:
         log.write(ctime().split()[3] + ": Started: Success.\n")
         log.flush()
 
-    def refresh(self):
+    def refresh(self,retries=2):
         log.write(ctime().split()[3] + ": Refreshing...\n")
         log.flush()
+        import requests
 
+        command = {"CREATE TABLE IF NOT EXISTS ogn_name_db (" +
+                   " device_type VARCHAR(255)," +
+                   " device_id VARCHAR(255)," +
+                   " aircraft_model VARCHAR(255)," +
+                   " registration VARCHAR(255)," +
+                   " cn VARCHAR(255)," +
+                   " tracked BOOL," +
+                   " identified BOOL);"}
+
+        dbc.execute(''.join(list(command)))                                      #Execute the command
+        sys.stderr.write(''.join(list(command)))
+
+        try:
+            response = requests.get("http://ddb.glidernet.org/download/?j=1")
+        except Exception as er:
+            while er != None and retries > 0:
+                er = None
+                retries -= 1
+                log.write(ctime().split()[3] + ": Refreshing: Failed to get file, trying again...\n")
+                try:
+                    response = requests.get("http://ddb.glidernet.org/download/?j=1")
+                except:
+                    er = "Not None"
+
+            if er != None:
+                log.write(ctime().split()[3] + ": Refreshing: Failed.\n")
+                return False
+
+        data = response.json()["devices"]
+        for devices in data:
+            if devices["tracked"] == "Y":
+                tracked = "1"
+            else:
+                tracked = "0"
+
+            if devices["identified"] == "Y":
+                identified = "1"
+            else:
+                identified = "0"
+
+            command = {"INSERT INTO ogn_name_db VALUES (" +
+                       "\"" + devices["device_type"] + "\"," +
+                       "\"" + devices["device_id"] + "\"," +
+                       "\"" + devices["aircraft_model"] + "\"," +
+                       "\"" + devices["registration"] + "\"," +
+                       "\"" + devices["cn"] + "\"," +
+                       tracked + "," +
+                       identified + ");"}
+
+            dbc.execute(''.join(list(command)))                                      #Execute the command
+            sys.stderr.write(''.join(list(command)) + "\n")
+
+        db.commit()
         log.write(ctime().split()[3] + ": Refreshing: Success.\n")
         log.flush()
         return
@@ -34,6 +89,7 @@ class NameDB:
         return
 
     def close(self):
+        db.close()
         log.write(ctime().split()[3] + ": Exiting: Success.\n")
         log.flush()
         log.close()                                                                                   #Close logfile
