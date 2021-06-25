@@ -14,12 +14,22 @@ try:
 
     if prc.prcname != name:                                                                          #prc.prcname is the name of the process that you can also see by typing "ps" into your console
         prc.nameStart(name,prc.script)                                                               #Starts this script again, but with the process name "ga_daemon",
-        os._exit(0)                                                                                  #and exits.
+        prc.close()
+        os._exit(0)                                                                                  #and exits without raising an exception.
+
+    prc.close()                                                                                      #Cleaning the object
 
 except:
     sys.stderr.write(time.ctime().split()[3] + ": " + prc.prcname + ": ProcessRenameError\n")
     sys.exit()
 
+
+def exit():
+    sys.stderr.write(time.ctime().split()[3] + ": " + prc.prcname + ": Exception\n")
+    data.close()                                                                                     #Closes everything except for the log file
+    data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Library stoped, successfull clean exit.\n")
+    data.out.flush()
+    data.out.close()                                                                                 #Close logfile
 
 def checkError(command="pass"):                                                                      #Every method that needs to be called at startup could return errors via self.error
     exec(command)                                                                                    #And this just saves one line of code each time called and its kinda cool
@@ -28,7 +38,6 @@ def checkError(command="pass"):                                                 
     except:
         data.out.write(data.result)
 
-prc.close()                                                                                          #Cleaning the object
 
 path = os.path.abspath(".")
 data = aprs_logger(path)                                                                             #Create aprs_logger object
@@ -38,10 +47,6 @@ checkError("data.version()")
 data.out.write("\n")                                                                                 #Makes it look cleaner
 if data.config[1] == "logfile": data.out.flush()                                                     #If a real file is used, this fixes the issue that messages go issing if the program crashes somewhere
 
-try:
-    data.client.run(callback=data.process_beacon, autoreconnect=True)                                #Kicks off the main process, can only be killed by exception
-
-except KeyboardInterrupt:
-    sys.stderr.write(time.ctime().split()[3] + ": " + prc.prcname + ": Exception\n")
-    data.out.write(time.ctime().split()[3] + ": " + prc.prcname + ": Library stoped, clean exit.\n")
-    #data.clean()                                                                                     #Clean and close aprs_logger
+time.sleep(1)
+exit()
+#data.client.run(callback=data.process_beacon, autoreconnect=True)                                    #Kicks off the main process that runs infinite
