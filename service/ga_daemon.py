@@ -4,6 +4,7 @@ import sys, os, time
 try:
     from processnamer import processGame
     from ground_assistant.aprs import aprs_logger
+    from ground_assistant.naming import NameDB
 except:
     sys.stderr.write(time.ctime().split()[3] + ": ga_daemon: ImportError\n")                         #The errors will be shown in the conosle. This becomes important if the process restarts itself.
     sys.exit()
@@ -38,15 +39,19 @@ def checkError(command="pass"):                                                 
     except:
         data.out.write(data.result)
 
-
 path = os.path.abspath(".")
 data = aprs_logger(path)                                                                             #Create aprs_logger object
 checkError()                                                                                         #Checking for errors
 checkError("data.preparesql()")                                                                      #We can use the easy way here
 checkError("data.version()")
+
+data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Refreshing NameDB...\n")
+ndb = NameDB()
+ndb.refresh()                                                                                        #Update NameDB; This can take more time than the rest of the loading together
+data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Done.\n")
 data.out.write("\n")                                                                                 #Makes it look cleaner
 if data.config[1] == "logfile": data.out.flush()                                                     #If a real file is used, this fixes the issue that messages go issing if the program crashes somewhere
 
 time.sleep(1)
-exit()
-#data.client.run(callback=data.process_beacon, autoreconnect=True)                                    #Kicks off the main process that runs infinite
+
+data.client.run(callback=data.process_beacon, autoreconnect=True)                                    #Kicks off the main process that runs infinite

@@ -38,7 +38,7 @@ class NameDB:
                    " identified BOOL);"}
 
         dbc.execute(''.join(list(command)))                                      #Execute the command
-        sys.stderr.write(''.join(list(command)))
+        dbc.execute("DELETE FROM ogn_name_db;")
 
         try:
             response = requests.get("http://ddb.glidernet.org/download/?j=1")
@@ -78,15 +78,17 @@ class NameDB:
                        identified + ");"}
 
             dbc.execute(''.join(list(command)))                                      #Execute the command
-            sys.stderr.write(''.join(list(command)) + "\n")
 
         db.commit()
         log.write(ctime().split()[3] + ": Refreshing: Success.\n")
         log.flush()
         return
 
-    def identify(self):
-        return
+    def identify(self,flarm):
+        dbc.execute("SELECT * FROM ogn_name_db WHERE device_id = \"" + flarm + "\";")
+        row = list(dbc.fetchall())
+        row = [x for sublist in row for x in sublist]
+        return row
 
     def close(self):
         db.close()
