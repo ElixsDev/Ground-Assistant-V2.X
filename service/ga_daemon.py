@@ -1,5 +1,5 @@
 #This is the daemon for the aprs_logger / ground-assistant. If you have problems with the code or questions about it, feel free to contact me via eliservices.server@gmail.com.
-import sys, os, time
+import sys, os, signal, time
 
 try:
     from processnamer import processGame
@@ -25,7 +25,7 @@ except:
     sys.exit()
 
 
-def exit():
+def close(signum, stack_frame):
     sys.stderr.write(time.ctime().split()[3] + ": " + prc.prcname + ": Exception\n")
     data.close()                                                                                     #Closes everything except for the log file
     data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Library stoped, successfull clean exit.\n")
@@ -52,6 +52,7 @@ data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Done.\n")
 data.out.write("\n")                                                                                 #Makes it look cleaner
 if data.config[1] == "logfile": data.out.flush()                                                     #If a real file is used, this fixes the issue that messages go issing if the program crashes somewhere
 
+signal.signal(signal.SIGINT, close)
 time.sleep(1)
 
 data.client.run(callback=data.process_beacon, autoreconnect=True)                                    #Kicks off the main process that runs infinite
