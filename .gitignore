@@ -1,1 +1,2 @@
-service/ga.conf
+daemon/ga.conf
+daemon/*.log
