@@ -114,8 +114,8 @@ class aprs_logger:
                 "\"" + beacon["receiver_name"] + "\"," +
                 "\"" + beacon["address"] + "\"," +
                 "\"" + str(beacon["aircraft_type"]) + "\"," +
-                "\"" + beacon["name"] + "\"," +                                #short       ??
-                "\"" + beacon["dstcall"] + "\"," +                             #callsign    ??
+                "\"Broken\"," +                                                #short       ??
+                "\"Broken\"," +                                                #callsign    ??
                 str(round(beacon["latitude"],7)) + "," +                       #No strings, no masked "
                 str(round(beacon["longitude"],7)) + "," +
                 str(round(beacon["ground_speed"],2)) + "," +
