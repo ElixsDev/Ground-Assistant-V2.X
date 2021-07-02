@@ -8,7 +8,7 @@
             require "./base/header.php";
             echo "\n";
             echo "        <div id=\"main\">\n";
-            echo $content;
+            require $content;
             echo "\n";
             echo "        </div>";
             echo "\n\n";

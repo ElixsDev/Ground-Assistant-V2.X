@@ -39,3 +39,11 @@ body {
         display:inline;
 }
 
+#rel_landings {
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+        width: 20%;
+        margin: 10px;
+        background-color: SkyBlue;
+}

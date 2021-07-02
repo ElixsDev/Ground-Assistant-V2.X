@@ -7,9 +7,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
         attachment = '<?php echo $sql ?>';
-        $('#reload').load("./content/loadcontent.php");
+        $('#reload').load("./content/time.php");
         setInterval(function() {
-            $('#reload').load("./content/loadcontent.php");
+            $('#reload').load("./content/time.php");
         } ,1000);
     })
 </script>

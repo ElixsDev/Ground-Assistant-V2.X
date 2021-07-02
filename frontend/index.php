@@ -2,6 +2,9 @@
     $name = "Ground-Assistant";
     $description = "EliServices Ground-Assistant";
     $version = $_GET["version"];
-    $content = file_get_contents("./content/".$version.".html");
+    if ($version != "stable" and $version != "unstable") {
+        $version = "stable";
+    }
+    $content = "./content/".$version.".php";
     require "./base/template.php";
 ?>
