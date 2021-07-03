@@ -1,3 +1,6 @@
-./service/ga.log
-./service/processnamer.log
-./service/aprs_errors.log
+daemon/ga.conf
+daemon/*.log
+frontend/index.php.old
+frontend/dataaccess.php
+frontend/dbstart.php
+alpha/*

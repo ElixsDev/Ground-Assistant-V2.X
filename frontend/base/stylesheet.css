@@ -1,0 +1,49 @@
+body {
+	background-color: SkyBlue;
+}
+
+
+#header {
+	position: fixed
+        width: 99%;
+}
+
+#header h1 {
+	font-size: 2.5em;
+	color: red;
+	display: inline;
+}
+
+#header a {
+        text-decoration: none;
+}
+
+
+#main {
+	position: fixed;
+	top: 90px;
+	bottom: 40px;
+        width: 98.7%;
+        background-color: LightSkyBlue;
+}
+
+
+#footer {
+        position: fixed;
+        bottom: 7.5px;
+        width: 99%;
+        font-size: 0.75em;
+}
+
+#footer p {
+        display:inline;
+}
+
+#rel_landings {
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+        width: 20%;
+        margin: 10px;
+        background-color: SkyBlue;
+}

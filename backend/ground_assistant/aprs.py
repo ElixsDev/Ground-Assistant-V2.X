@@ -5,10 +5,10 @@ class aprs_logger:
     def __init__(self,path):
         #Importing...
         import sys
-        global ts                                                              #Used to measure execution time
+        global ts, ct, db, aprs_error, config
         from time import ctime as ct, perf_counter as ts
         t_start = ts()                                                         #First timestamp
-        self.killed = False
+        self._kill = False
 
         try:
             global parse                                                       #Only parse is needed globaly here
@@ -30,22 +30,20 @@ class aprs_logger:
 
         #Configuring...
         try:
-            global config
             config = load(path)                                                #Settings are beeing loaded from configfile and MySQL is beeing prepared
             self.config = config
 
-            global db
             db = load.db                                                       #Transfer sql object
 
             if config[1] == "console":                                         #Redirect output to console
                 self.out = sys.stderr
+                aprs_error = sys.stderr
             elif config[1] == "logfile":                                       #Redirect output to logfile
                 self.out = open(path + "/ga.log", "a")
+                aprs_error = open(path + "/aprs_error.log", "a")               #File where ogn-client errors are beeing logged
             else:                                                              #No output, but still write method (makes it easier)
                 self.out = open("/dev/null", "a")
-
-            global aprs_error                                                  #File where ogn-client errors are beeing logged.
-            aprs_error = open(path + "/aprs_error.log", "a")
+                aprs_error = open("/dev/null", "a")
 
         except Exception as er:                                                #Since errors can get complicated here, the original error is included here
             self.error = "GA: Error while loading:" + str(er) + "\n"
@@ -116,8 +114,8 @@ class aprs_logger:
                 "\"" + beacon["receiver_name"] + "\"," +
                 "\"" + beacon["address"] + "\"," +
                 "\"" + str(beacon["aircraft_type"]) + "\"," +
-                "\"" + beacon["name"] + "\"," +                                #short       ??
-                "\"" + beacon["dstcall"] + "\"," +                             #callsign    ??
+                "\"Broken\"," +                                                #short       ??
+                "\"Broken\"," +                                                #callsign    ??
                 str(round(beacon["latitude"],7)) + "," +                       #No strings, no masked "
                 str(round(beacon["longitude"],7)) + "," +
                 str(round(beacon["ground_speed"],2)) + "," +
@@ -135,8 +133,8 @@ class aprs_logger:
     #This function processes the beacon. It needs preparesql() to be executed before.
     def process_beacon(self,raw_message):
         #Trying to parse the beacon with the "ogn-client" library parser...
-        if self.killed != False:
-            self.killed = None
+        if self._kill != False:
+            self._kill = None
             return
 
         try:
@@ -160,6 +158,25 @@ class aprs_logger:
             return
 
         return
+
+    def close(self):
+        if self._kill == False:
+            from time import sleep
+            self._kill = True
+            sleep(1)
+            self.client.disconnect()
+
+            sleep(1)
+            db.close()
+
+            aprs_error.flush()
+            aprs_error.close()
+
+            self.out.write("\n" + ct().split()[3] + " EliServices Ground Assistant Library exited.\n")
+            self.out.flush()
+            return True
+
+        return False
 
     #Prints version.
     def version(self):
