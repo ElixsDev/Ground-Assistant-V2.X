@@ -6,6 +6,8 @@ class aprs_logger:
         #Importing...
         import sys
         global ts, ct, db, aprs_error, config
+        from multiprocessing import Process
+        from queue import Queue
         from time import ctime as ct, perf_counter as ts
         t_start = ts()                                                         #First timestamp
         self._kill = False
@@ -22,7 +24,7 @@ class aprs_logger:
 
         try:
             from ground_assistant.load import load                             #Import internal librarys
-
+            from ground_assistant.rtd import RealTimeData
         except:
             self.error = "GA: Internal library error.\n"
             return
@@ -158,6 +160,15 @@ class aprs_logger:
             return
 
         return
+
+    def start(self):
+        callbackprocess = self.process_beacon
+        dblogger = Process(target=self.client.run, args=("callback=callbackprocess", "autoreconnect=True"))
+        rtdata = Process(target=RealTimeData.run)
+        dblogger.start()
+        rtdata.start()
+        dblogger.join()
+        rtdata.join()
 
     def close(self):
         if self._kill == False:
