@@ -26,11 +26,17 @@ except:
 
 
 def close(signum, stack_frame):
-    sys.stderr.write(time.ctime().split()[3] + ": " + prc.prcname + ": Exception\n")
-    data.close()                                                                                     #Closes everything except for the log file
+    #if _kill == False: return
+    #_kill = True
+    data.out.write(time.ctime().split()[3] + ": " + prc.prcname + ": Started exit procedure...\n")
+    data.close()                                                                                #Closes everything except for the log file
     data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Library stoped, successfull clean exit.\n")
     data.out.flush()
     data.out.close()                                                                                 #Close logfile
+
+#global _kill
+#_kill = False
+
 
 def checkError(command="pass"):                                                                      #Every method that needs to be called at startup could return errors via self.error
     exec(command)                                                                                    #And this just saves one line of code each time called and its kinda cool
@@ -42,17 +48,22 @@ def checkError(command="pass"):                                                 
 path = os.path.abspath(".")
 data = aprs_logger(path)                                                                             #Create aprs_logger object
 checkError()                                                                                         #Checking for errors
-checkError("data.preparesql()")                                                                      #We can use the easy way here
-checkError("data.version()")
+data.out.write(data.version() + "\n")
 
-data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Refreshing NameDB...\n")
-ndb = NameDB()
-ndb.refresh()                                                                                        #Update NameDB; This can take more time than the rest of the loading together
-data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": Done.\n")
-data.out.write("\n")                                                                                 #Makes it look cleaner
-if data.config[1] == "logfile": data.out.flush()                                                     #If a real file is used, this fixes the issue that messages go issing if the program crashes somewhere
+#data.out.write(time.ctime().split()[3] + ": " + prc.prcname + ": Refreshing NameDB...\n")
+#ndb = NameDB()
+#ndb.refresh()                                                                                        #Update NameDB; This can take more time than the rest of the loading together
+#data.out.write(time.ctime().split()[3] + ": " + prc.prcname + ": Done.\n")
+#data.out.write("\n")                                                                                 #Makes it look cleaner
+#if data.config[1] == "logfile": data.out.flush()                                                     #If a real file is used, this fixes the issue that messages go issing if the program crashes somewhere
 
-signal.signal(signal.SIGINT, close)
-time.sleep(1)
+signal.signal(signal.SIGUSR1, close)
 
-data.client.run(callback=data.process_beacon, autoreconnect=True)                                    #Kicks off the main process that runs infinite
+children = data.create_listeners(processGame)
+if children[0].is_alive() == False:
+    data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": rtd process died.\n")
+
+if children[1].is_alive() == False:
+    data.out.write(time.ctime().split()[3] + " " + prc.prcname + ": dbl process died.\n")
+
+data.client.run(callback=data.process_beacon, autoreconnect=True)

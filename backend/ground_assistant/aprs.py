@@ -5,37 +5,32 @@ class aprs_logger:
     def __init__(self,path):
         #Importing...
         import sys
-        global ts, ct, db, aprs_error, config
-        from multiprocessing import Process
-        from queue import Queue
-        from time import ctime as ct, perf_counter as ts
+        global ts, ct, sleep, config, aprs_error, executed
+        from time import ctime as ct, perf_counter as ts, sleep
         t_start = ts()                                                         #First timestamp
+        executed = False
         self._kill = False
 
         try:
             global parse                                                       #Only parse is needed globaly here
             from ogn.client import AprsClient                                  #Import the aprs packages
             from ogn.parser import parse, ParseError
-
         except:
-            self.error = "GA: Package \"ogn-client\" missing.\n"               #You need to check for the existance of this variable after the execution, there won't be a python error.
+            self.error = "aprs: Package \"ogn-client\" missing.\n"               #You need to check for the existance of this variable after the execution, there won't be a python error.
             return
 
 
         try:
             from ground_assistant.load import load                             #Import internal librarys
-            from ground_assistant.rtd import RealTimeData
         except:
-            self.error = "GA: Internal library error.\n"
+            self.error = "aprs: Internal library error.\n"
             return
 
 
         #Configuring...
         try:
             config = load(path)                                                #Settings are beeing loaded from configfile and MySQL is beeing prepared
-            self.config = config
-
-            db = load.db                                                       #Transfer sql object
+            self.config = config                                               #Make configs available
 
             if config[1] == "console":                                         #Redirect output to console
                 self.out = sys.stderr
@@ -48,7 +43,7 @@ class aprs_logger:
                 aprs_error = open("/dev/null", "a")
 
         except Exception as er:                                                #Since errors can get complicated here, the original error is included here
-            self.error = "GA: Error while loading:" + str(er) + "\n"
+            self.error = "aprs: Error while loading:" + str(er) + "\n"
             return
 
         try:
@@ -56,140 +51,100 @@ class aprs_logger:
             self.client.connect()
 
         except Exception as er:                                                #Also many different possible failures, so error is included
-            self.error = "GA: Can't connect to APRS server." + str(er) + "\n"
+            self.error = "aprs: Can't connect to APRS server." + str(er) + "\n"
             return
 
         self.result = "\n" + ct().split()[3] + " EliServices Ground Assistant Library started.\nLoading done in: " + str(round(ts() - t_start,2)) + "sec.\n"
 
-    #Called after initalizing to prepare MySQL:
-    def preparesql(self):
-        from datetime import date
+    def rtd_process(self, rtd_pipe_recv):
+        from ground_assistant.rtd import RealTimeData
+        rtd = RealTimeData(ct, self.out, self.processGame)
+        rtd.run(rtd_pipe_recv)
 
-        #Create today's table...
-        try:
-            t_start = ts()                                                     #First timestamp
-            global dbc
-            dbc = db.cursor()                                                  #Create cursor() object to acces MySQL
-            x = {"CREATE TABLE IF NOT EXISTS " +                               #x is the SQL command to create a table
-                 str(date.today()).replace("-","_") +                          #where the name is todays date
-                 " ( time TIME," +                                             #First row is a timestamp,
-                 " beacon_type VARCHAR(255)," +                                #second the type of beacon
-                 " receiver VARCHAR(255)," +                                   #the receiver,
-                 " device_id VARCHAR(6)," +                                    #FLARM ID,
-                 " type VARCHAR(20)," +                                        #type of aircraft,
-                 " short VARCHAR(10)," +                                       #Quickly identify aircrafts,
-                 " callsign VARCHAR(10)," +                                    #official callsign,
-                 " north DOUBLE(180,7)," +                                     #coordinates north,
-                 " east DOUBLE(180,7)," +                                      #coordinates south,
-                 " groundspeed INT(255)," +                                    #groundspeed,
-                 " msl INT(255)," +                                            #hight above sealevel (MSL),
-                 " climbrate FLOAT(10)," +                                     #and the climbrate
-                 " turnrate FLOAT(10)," +                                      #and the turnrate
-                 " gps_horizontal FLOAT(10)," +                                #and the climbrate
-                 " gps_vertical FLOAT(10));"}                                  #and the climbrate
+    def dbl_process(self, dbl_pipe_recv):
+        from ground_assistant.dbl import DBLogger
+        parameter = {"ct": ct, "ts": ts, "out": self.out, "processGame": self.processGame, "sqlcred": [self.config[9], self.config[10]]}
+        dbl = DBLogger(**parameter)
+        if dbl.init == True:
+            dbl.run(dbl_pipe_recv)
 
-            dbc.execute(''.join(list(x)))                                      #Execute the command
+    def create_listener(self, processGame):
+        global rtd_pipe_recv, rtd_pipe_send, rtd_p, dbl_pipe_recv, dbl_pipe_send, dbl_p
+        self.processGame = processGame
+        from multiprocessing import Process, Pipe
 
-            try:                                                               #Sometimes for some reason this gives an error
-                row = list(dbc.fetchall())                                     #Read SQL's reaction (=> 2D list)
-                row = [x for sublist in row for x in sublist]                  #This makes the 2D list row 1D
-            except:                                                            #The lines aren't needed, we can continue as usual
-                pass
+        rtd_pipe_recv, rtd_pipe_send = Pipe()
+        rtd_p = Process(target=self.rtd_process, args=(rtd_pipe_recv, ))
+        rtd_p.start()
 
-            self.result = "Created table in: " + str(round(ts() - t_start,2)) + "sec.\n"
-            return
-
-        except Exception as er:
-            self.error = "GA: Failed to create today's table." + str(er) + "\n"
-            return
-
-    #Called by the function that processes the beacon. Can be used without it, but needs preparesql() to be executed before.
-    def dbw(self,beacon):
-        from datetime import date
-
-        #Build command...
-        x = {"INSERT INTO " +                                                  #This is the MySQL-comand that inserts our data in the database
-            str(date.today()).replace("-","_") +
-                " VALUES (" +
-                "\"" + str(beacon["timestamp"].time()) + "\"," +               #"\"" is just a masked " that is needed because SQL wants a string to be in "
-                "\"" + beacon["beacon_type"] + "\"," +
-                "\"" + beacon["receiver_name"] + "\"," +
-                "\"" + beacon["address"] + "\"," +
-                "\"" + str(beacon["aircraft_type"]) + "\"," +
-                "\"Broken\"," +                                                #short       ??
-                "\"Broken\"," +                                                #callsign    ??
-                str(round(beacon["latitude"],7)) + "," +                       #No strings, no masked "
-                str(round(beacon["longitude"],7)) + "," +
-                str(round(beacon["ground_speed"],2)) + "," +
-                str(round(beacon["altitude"],2)) + "," +
-                str(round(beacon["climb_rate"],2)) + "," +
-                str(round(beacon["turn_rate"],2)) + "," +
-                str(beacon["gps_quality"]["horizontal"]) + "," +
-                str(beacon["gps_quality"]["vertical"]) + ");"}
-
-        content = (''.join(list(x)))                                           #Converts 2D list in string
-        dbc.execute(content)                                                   #Execute SQL command content[i]
-        db.commit()
-        return "Executed: " + content                                          #Other than the functions for initialisation, this directly returns its success message
+        dbl_pipe_recv, dbl_pipe_send = Pipe()
+        dbl_p = Process(target=self.dbl_process, args=(dbl_pipe_recv, ))
+        dbl_p.start()
+        return [rtd_p, dbl_p]
 
     #This function processes the beacon. It needs preparesql() to be executed before.
     def process_beacon(self,raw_message):
         #Trying to parse the beacon with the "ogn-client" library parser...
-        if self._kill != False:
-            self._kill = None
-            return
+        if self._kill != False: return
 
         try:
             beacon = parse(raw_message)
-
         except Exception as er:
-            aprs_error.write(str(er) + "\n")                                   #Failures are written to a seperate file to monitore them
+            aprs_error.write(str(er) + "\n")                             #Failures are written to a seperate file to monitore them
             aprs_error.flush()
             return
 
-        #Write the right beacons into the database...
+        #Filter the beacons and hand them to the processes
         try:
             if beacon["aprs_type"] == "position" and beacon["beacon_type"] == "flarm" and float(beacon["latitude"]) <= float(config[3]["maxlat"]) and float(beacon["latitude"]) >= float(config[3]["minlat"]):
                 if float(beacon["longitude"]) <= float(config[3]["maxlon"]) and float(beacon["longitude"]) >= float(config[3]["minlon"]):
-                    #If the beacons meet the requirements (beeing a flarm beacon inside the defined square), it will get written...
-                    self.out.write(self.dbw(beacon) + "\n")
-                    if config[1] == "logfile": self.out.flush()
+                    rtd_pipe_send.send(beacon)
+                    dbl_pipe_send.send(beacon)
+            return [None]
 
-        except Exception as er:
-            self.error = er                                                    #Errors are to complicated here
-            return
-
-        return
-
-    def start(self):
-        callbackprocess = self.process_beacon
-        dblogger = Process(target=self.client.run, args=("callback=callbackprocess", "autoreconnect=True"))
-        rtdata = Process(target=RealTimeData.run)
-        dblogger.start()
-        rtdata.start()
-        dblogger.join()
-        rtdata.join()
+        except Exception:
+            return [Exception]
 
     def close(self):
-        if self._kill == False:
-            from time import sleep
-            self._kill = True
+        if executed != False: return
+        self.out.write("aprs.close: called...\n")
+        executed = True
+        self._kill = True
+        sleep(1)
+        self.client.disconnect()
+
+        try:
+            rtd_pipe_send.send("KILL")
+            dbl_pipe_send.send("KILL")
             sleep(1)
-            self.client.disconnect()
+        except Exception:
+            self.out.write("aprs.close: unable to send kill command over pipes.\n")
 
-            sleep(1)
-            db.close()
+        self.out.write("aprs.close: child processes...\n")
+        if dbl_p.is_alive():
+            self.out.write("DBL is alive!\n")
+            dbl_p.terminate()
+        #dbl_p.close()
 
-            aprs_error.flush()
-            aprs_error.close()
+        if rtd_p.is_alive():
+            self.out.write("RTD is alive!\n")
+            rtd_p.terminate()
+        #rtd_p.close()
 
-            self.out.write("\n" + ct().split()[3] + " EliServices Ground Assistant Library exited.\n")
-            self.out.flush()
-            return True
+        #self.out.write("aprs.close: MySQL...\n")
+        #db.commit()
+        #db.close()
 
-        return False
+        self.out.write("aprs.close: aprs_error file...\n")
+        aprs_error.flush()
+        aprs_error.close()
+
+        self.out.write(ct().split()[3] + ": Exiting.\n")
+        self.out.flush()
+        return True
 
     #Prints version.
     def version(self):
-        self.result = "EliServices GA utility aprs.py at version 2.0\n"
-        return
+        from ground_assistant.rtd import version as rtd_version
+        from ground_assistant.dbl import version as dbl_version
+        return "EliServices GA utility aprs.py at version 2.1\n" + rtd_version() + dbl_version()

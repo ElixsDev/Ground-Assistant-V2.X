@@ -69,37 +69,23 @@ def load(configpath="."):
         sys.stderr.write("GA: Failed to load configuration\n")
         sys.exit()
 
-    #Generating http url:
-    try:                                                                      #Prevent code from crashing
-        server = "http://live.glidernet.org/lxml.php?"                        #Server address
-        a = config[0]
-        b = config[1]
-        c = config[2]
-        d = config[3]
-        e = config[4]
-        filter = "a=" + a + "&b=" + b + "&c=" + c + "&d=" + d + "&e=" + e     #Assembling filter
-        url = server + filter                                                 #Buliding url
-    except:
-        sys.stderr.write("GA: Failed to generate url.\n")
-        sys.exit()
-
     #Loading SQL:
-    try:
-        lret = loadsql(config[9],config[10])                                   #Calling loadsql function
-        dbc = loadsql.db.cursor()                                              #Transfer object
-        dbc.execute("SHOW TABLES;")                                            #Test object
-        row = list(dbc.fetchall())
-        row = [x for sublist in row for x in sublist]
-        if lret != row:                                                        #Make sure everything is okay
-            nonsensetoraiseerror
-    except:
-        sys.stderr.write("GA: Failed to load SQL.\n")
-        sys.exit()
+    #try:
+    #    lret = loadsql(config[9],config[10])                                   #Calling loadsql function
+    #    dbc = loadsql.db.cursor()                                              #Transfer object
+    #    dbc.execute("SHOW TABLES;")                                            #Test object
+    #    row = list(dbc.fetchall())
+    #    row = [x for sublist in row for x in sublist]
+    #    if lret != row:                                                        #Make sure everything is okay
+    #        nonsensetoraiseerror
+    #except:
+    #    sys.stderr.write("GA: Failed to load SQL.\n")
+    #    sys.exit()
 
     #Return value(s):
-    load.db = loadsql.db                                                       #Make object available
+    #load.db = loadsql.db                                                       #Make object available
     value = []
-    value.append(url)                                                          #Url
+    value.append("")                                                           #Used to be an URL, but isn't needed in current versions
     value.append(config[7])                                                    #Runmode
     value.append(config[8])                                                    #Time to wait for main.collect
     coordinates = {"maxlat": b, "minlat": c, "maxlon": d, "minlon": e}
