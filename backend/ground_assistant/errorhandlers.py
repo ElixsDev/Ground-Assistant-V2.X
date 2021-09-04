@@ -6,3 +6,6 @@ class mySQLError(Exception):
 
 class httpError(Exception):
     pass
+
+class APRSPackageError(Exception):
+    pass

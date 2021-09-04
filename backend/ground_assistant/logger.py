@@ -1,7 +1,7 @@
 from ground_assistant.errorhandlers import *
 
 class Logger:
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         from time import ctime as ct
         global ct
 
@@ -10,7 +10,7 @@ class Logger:
             from sys import stderr
             self.out = stderr
         elif runmode == "logfile":
-            self.out = open(kwargs["path"] + "/ga.log", "a")
+            self.out = open(kwargs["path"] + "/" + kwargs["name"], "a")
         else:
             self.out = open("/dev/null", "a")
 

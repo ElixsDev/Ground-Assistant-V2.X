@@ -27,7 +27,7 @@ class ReadConfig:
             type = self
 
         if type == "coordinates":
-            return {"north": [float(config[1]), float(config[2])], "south": [float(config[3]), float(config[4])], "height": int(config[6])}
+            return {"north": [float(config[1]), float(config[2])], "east": [float(config[3]), float(config[4])], "altitude": int(config[6])}
         elif type == "runmode":
             return config[7]
         elif type == "mySQL":
