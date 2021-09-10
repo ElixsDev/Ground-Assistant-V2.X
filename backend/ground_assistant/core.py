@@ -1,26 +1,32 @@
 from ground_assistant.errorhandlers import *
 
 class Core:
-    def __init__(self, **kwargs):
+    def __init__(self, path, mode = "startup"):
+        global ReadConfig, mySQL, Logger, NameDB
         from ground_assistant.load import ReadConfig, mySQL
         from ground_assistant.logger  import Logger
         from ground_assistant.namedb import NameDB
 
-        configs = ReadConfig(kwargs["path"])
+        self.path = path
+        configs = ReadConfig(path)
         self.configs = configs
         self.coordinates = configs.getconfig("coordinates")
 
-        self.logging = Logger(config_obj = configs, path = kwargs["path"], name = "ga.conf")
-        self.aprs_logging = Logger(config_obj = configs, path = kwargs["path"], name = "aprs_error.log")
+        self.logging = Logger(config_obj = configs, path = path, name = "ga.log")
+        self.aprs_logging = Logger(config_obj = configs, path = path, name = "aprs_error.log")
 
-        self.logging.append("Starting...")
+        if mode == "startup": self.logging.append("Starting...")
+        if mode == "restart": self.logging.append("Daemon restarting...")
 
         sql = mySQL()
         self.sql = sql
         sql.sendquery("SHOW TABLES;")
         self.logging.append("Core MySQL: ready")
 
-        self.ndb = NameDB(sql = mySQL, logging = self.logging)                                                           #The ndb object has its own mySQL connection
+        self.ndb = NameDB(sql = mySQL, logging = self.logging)    #The ndb object has its own mySQL connection
+        self.clientready = False
+        self.pipesready = False
+        return
 
     def aprs(self):
         try:
@@ -28,7 +34,6 @@ class Core:
             from ogn.parser import parse, ParseError
 
         except ImportError:
-            self.success = False
             self.logging.append("Python package \"ogn-client\" missing")
             return
 
@@ -36,15 +41,17 @@ class Core:
         self.aprs_error = ParseError
         self.client = AprsClient(aprs_user='N0CALL')
         self.client.connect()
-
-        self.success = True
         self.logging.append("Core APRS: ready")
 
+        self.clientready = True
+        if self.pipesready == True: self.logging.append("Daemon ready to run.")
         return self.client
 
     def open_mouth(self):
         from ground_assistant.listeners import Listeners
         from multiprocessing import Process, Pipe
+        from time import sleep
+
         live_receive, live_send = Pipe()
         db_receive, db_send = Pipe()
         self.pipes = {"live": live_send, "db": db_send}
@@ -57,8 +64,13 @@ class Core:
         live_process.start()
         db_process.start()
         self.processes = {"live": live_process, "db": db_process}
+
+        sleep(2)
+        db_send.send("PATH" + self.path)
         self.logging.append("Forking Processes: running")
 
+        self.pipesready = True
+        if self.clientready == True: self.logging.append("Daemon ready to run.")
         return self.processes
 
     def scream(self, raw_message):
@@ -75,23 +87,27 @@ class Core:
                     self.pipes["db"].send(beacon)
         return
 
-    def close(self):
+    def close(self, mode = "close"):
         self.logging.append("Stopping...")
 
+        if self.pipesready == True:
+            self.pipes["live"].send("KILL")
+            self.pipes["db"].send("KILL")
 
-        self.pipes["live"].send("KILL")
-        self.pipes["db"].send("KILL")
+            self.processes["live"].join()
+            self.processes["db"].join()
 
-        self.processes["live"].join()
-        self.processes["db"].join()
+            self.processes["live"].close()
+            self.processes["db"].close()
+            self.logging.append("Forking Processes: stopped")
+        else:
+            self.logging.append("Forking Processes: never started")
 
-        self.processes["live"].close()
-        self.processes["db"].close()
-        self.logging.append("Forking Processes: stopped")
-
-
-        self.client.disconnect()
-        self.logging.append("Core APRS: disconnected")
+        if self.clientready == True:
+            self.client.disconnect()
+            self.logging.append("Core APRS: disconnected")
+        else:
+            self.logging.append("Core APRS: never connected")
 
         self.ndb.close()
         self.logging.append("Core NameDB: closed")
@@ -99,8 +115,10 @@ class Core:
         self.sql.commit()
         self.sql.close()
         self.logging.append("Core MySQL: closed")
-        self.logging.append("Daemon stopped.")
+        if mode == "close": self.logging.append("Daemon stopped.")
+        if mode == "restart": self.logging.append("Daemon ready to restart.")
         self.logging.close()
+        return
 
 def version():
     return "core.py: 1.0"
