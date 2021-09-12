@@ -48,6 +48,7 @@ class MySQLLogger:
              str(beacon["gps_quality"]["vertical"]) + ");"}
 
         self.mysql.sendquery(''.join(list(x)))
+        self.mysql.commit()
         self.stats += 1
         return True
 

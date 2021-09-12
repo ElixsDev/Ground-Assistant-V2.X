@@ -113,6 +113,10 @@ class Daemon:
         else:
             return status
 
+    def show(self):
+        self.c.pipes["db"].send("SHOW")
+        return True
+
     def refresh_ndb(self, ifnotdoneyet = False):
         if self.closed == True: return False
         self.logging.append("Triggered NameDB refresh...")
