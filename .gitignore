@@ -3,4 +3,4 @@ daemon/*.log
 frontend/index.php.old
 frontend/dataaccess.php
 frontend/dbstart.php
-alpha/*
+old/*

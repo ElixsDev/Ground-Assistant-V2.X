@@ -1,6 +1,5 @@
 class Daemon:
     def __init__(self, mode = "quickstart"):
-        global Core
         from ground_assistant import Core
         from os.path import abspath
         self.path = abspath(".")
@@ -50,7 +49,9 @@ class Daemon:
         self.stop()
         self.prepared = False
         self.c.close(mode = "restart")
+
         del self.c
+        from ground_assistant.core import Core
 
         self.c = Core(self.path, mode = "restart")
         self.logging = self.c.logging

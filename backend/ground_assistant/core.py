@@ -66,6 +66,7 @@ class Core:
         self.processes = {"live": live_process, "db": db_process}
 
         sleep(2)
+        Listeners = None
         db_send.send("PATH" + self.path)
         self.logging.append("Forking Processes: running")
 
@@ -76,7 +77,7 @@ class Core:
     def scream(self, raw_message):
         try:
             beacon = self.aprs_parse(raw_message)
-        except self.aprs_error as message:
+        except Exception as message: #self.aprs_error as message:
             self.aprs_logging.append(str(message))
             return
 
@@ -91,14 +92,16 @@ class Core:
         self.logging.append("Stopping...")
 
         if self.pipesready == True:
-            self.pipes["live"].send("KILL")
-            self.pipes["db"].send("KILL")
-
-            self.processes["live"].join()
-            self.processes["db"].join()
-
-            self.processes["live"].close()
+            if self.processes["db"].is_alive():
+                self.pipes["db"].send("KILL")
+                self.processes["db"].join()
             self.processes["db"].close()
+
+            if self.processes["live"].is_alive():
+                self.pipes["live"].send("KILL")
+                self.processes["live"].join()
+            self.processes["live"].close()
+
             self.logging.append("Forking Processes: stopped")
         else:
             self.logging.append("Forking Processes: never started")
