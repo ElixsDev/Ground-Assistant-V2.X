@@ -1,6 +1,8 @@
 daemon/ga.conf
 daemon/*.log
+daemon/__pycache__
 frontend/index.php.old
 frontend/dataaccess.php
 frontend/dbstart.php
-old/*
+backend/ground_assistant/__pycache__
+old
