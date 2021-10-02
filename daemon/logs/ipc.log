@@ -1,0 +1,268 @@
+Oct  2 16:29:31: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:38:51: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:39:08: IPC Connection accepted from ('127.0.0.1', 42232)
+Oct  2 16:39:08: Got close
+Oct  2 16:39:08: Received Close from ('127.0.0.1', 42232)
+Oct  2 16:39:08: Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:39:08: Bye
+
+Oct  2 16:39:26: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:56:14: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:56:23: IPC Connection accepted from ('127.0.0.1', 42262)
+Oct  2 16:56:23: Got status
+Oct  2 16:56:23: Received Status request from ('127.0.0.1', 42262)
+Oct  2 16:56:23: Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:56:57: IPC Connection accepted from ('127.0.0.1', 42264)
+Oct  2 16:56:57: Got close
+Oct  2 16:56:57: Received Close from ('127.0.0.1', 42264)
+Oct  2 16:56:57: Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:56:57: Bye
+
+Oct  2 16:57:10: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:57:17: IPC Connection accepted from ('127.0.0.1', 42274)
+Oct  2 16:57:17: Got stop
+Oct  2 16:57:17: Received Stop from ('127.0.0.1', 42274)
+Oct  2 16:57:18: IPC Connection accepted from ('127.0.0.1', 42276)
+Oct  2 16:57:18: Got status
+Oct  2 16:57:18: Received Status request from ('127.0.0.1', 42276)
+Oct  2 16:57:18: Daemon is prepared and ready to run, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is dead.
+Oct  2 16:57:18: IPC Connection accepted from ('127.0.0.1', 42278)
+Oct  2 16:57:18: Got continue
+Oct  2 16:57:18: Received Continue from ('127.0.0.1', 42278)
+Oct  2 16:57:18: IPC Connection accepted from ('127.0.0.1', 42280)
+Oct  2 16:57:18: Got restart
+Oct  2 16:57:18: Received Restart from ('127.0.0.1', 42280)
+Oct  2 16:57:20: IPC Connection accepted from ('127.0.0.1', 42290)
+Oct  2 16:57:20: Got refresh_ndb
+Oct  2 16:57:20: Received Refresh_ndb from ('127.0.0.1', 42290)
+Oct  2 16:57:47: IPC Connection accepted from ('127.0.0.1', 42296)
+Oct  2 16:57:47: Got status
+Oct  2 16:57:47: Received Status request from ('127.0.0.1', 42296)
+Oct  2 16:57:47: Daemon is running, NameDB was last refreshed on Oct  2 16:57:47
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 16:57:47: IPC Connection accepted from ('127.0.0.1', 42298)
+Oct  2 16:57:47: Got close
+Oct  2 16:57:47: Received Close from ('127.0.0.1', 42298)
+Oct  2 16:57:47: Daemon is running, NameDB was last refreshed on Oct  2 16:57:47
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:57:47: Bye
+
+Oct  2 16:59:42: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:00:48: IPC Connection accepted from ('127.0.0.1', 42308)
+Oct  2 17:00:48: Got close
+Oct  2 17:00:48: Received Close from ('127.0.0.1', 42308)
+Oct  2 17:00:48: Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:00:48: Bye
+
+Oct  2 17:03:07: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:03:15: IPC Connection accepted from ('127.0.0.1', 42318)
+Oct  2 17:03:15: Got stop
+Oct  2 17:03:15: Received Stop from ('127.0.0.1', 42318)
+Oct  2 17:03:15: IPC Connection accepted from ('127.0.0.1', 42320)
+Oct  2 17:03:15: Got status
+Oct  2 17:03:15: Received Status request from ('127.0.0.1', 42320)
+Oct  2 17:03:15: Daemon is prepared and ready to run, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is dead.
+Oct  2 17:03:15: IPC Connection accepted from ('127.0.0.1', 42322)
+Oct  2 17:03:15: Got continue
+Oct  2 17:03:15: Received Continue from ('127.0.0.1', 42322)
+Oct  2 17:03:15: IPC Connection accepted from ('127.0.0.1', 42324)
+Oct  2 17:03:15: Got restart
+Oct  2 17:03:15: Received Restart from ('127.0.0.1', 42324)
+Oct  2 17:03:17: IPC Connection accepted from ('127.0.0.1', 42334)
+Oct  2 17:03:17: Got refresh_ndb
+Oct  2 17:03:17: Received Refresh_ndb from ('127.0.0.1', 42334)
+Oct  2 17:03:47: IPC Connection accepted from ('127.0.0.1', 42340)
+Oct  2 17:03:47: Got status
+Oct  2 17:03:47: Received Status request from ('127.0.0.1', 42340)
+Oct  2 17:03:47: Daemon is running, NameDB was last refreshed on Oct  2 17:03:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:03:47: IPC Connection accepted from ('127.0.0.1', 42342)
+Oct  2 17:03:47: Got close
+Oct  2 17:03:47: Received Close from ('127.0.0.1', 42342)
+Oct  2 17:03:47: Daemon is running, NameDB was last refreshed on Oct  2 17:03:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:03:47: Bye
+
+Oct  2 17:05:34: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:05:42: IPC Connection accepted from ('127.0.0.1', 42352)
+Oct  2 17:05:42: Got stop
+Oct  2 17:05:42: Received Stop from ('127.0.0.1', 42352)
+Oct  2 17:05:42: IPC Connection accepted from ('127.0.0.1', 42354)
+Oct  2 17:05:42: Got status
+Oct  2 17:05:42: Received Status request from ('127.0.0.1', 42354)
+Oct  2 17:05:42: Daemon is prepared and ready to run, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is dead.
+Oct  2 17:05:42: IPC Connection accepted from ('127.0.0.1', 42356)
+Oct  2 17:05:42: Got continue
+Oct  2 17:05:42: Received Continue from ('127.0.0.1', 42356)
+Oct  2 17:05:43: IPC Connection accepted from ('127.0.0.1', 42358)
+Oct  2 17:05:43: Got restart
+Oct  2 17:05:43: Received Restart from ('127.0.0.1', 42358)
+Oct  2 17:05:45: IPC Connection accepted from ('127.0.0.1', 42368)
+Oct  2 17:05:45: Got refresh_ndb
+Oct  2 17:05:45: Received Refresh_ndb from ('127.0.0.1', 42368)
+Oct  2 17:06:11: IPC Connection accepted from ('127.0.0.1', 42374)
+Oct  2 17:06:11: Got status
+Oct  2 17:06:11: Received Status request from ('127.0.0.1', 42374)
+Oct  2 17:06:11: Daemon is running, NameDB was last refreshed on Oct  2 17:06:11
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:06:11: IPC Connection accepted from ('127.0.0.1', 42376)
+Oct  2 17:06:11: Got close
+Oct  2 17:06:11: Received Close from ('127.0.0.1', 42376)
+Oct  2 17:06:11: Daemon is running, NameDB was last refreshed on Oct  2 17:06:11
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:06:11: Bye
+
+Oct  2 17:08:05: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:08:12: IPC Connection accepted from ('127.0.0.1', 42386)
+Oct  2 17:08:12: Got stop
+Oct  2 17:08:12: Received Stop from ('127.0.0.1', 42386)
+Oct  2 17:08:13: IPC Connection accepted from ('127.0.0.1', 42388)
+Oct  2 17:08:13: Got status
+Oct  2 17:08:13: Received Status request from ('127.0.0.1', 42388)
+Oct  2 17:08:13: Daemon is prepared and ready to run, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is dead.
+Oct  2 17:08:13: IPC Connection accepted from ('127.0.0.1', 42390)
+Oct  2 17:08:13: Got continue
+Oct  2 17:08:13: Received Continue from ('127.0.0.1', 42390)
+Oct  2 17:08:13: IPC Connection accepted from ('127.0.0.1', 42392)
+Oct  2 17:08:13: Got restart
+Oct  2 17:08:13: Received Restart from ('127.0.0.1', 42392)
+Oct  2 17:08:15: IPC Connection accepted from ('127.0.0.1', 42402)
+Oct  2 17:08:15: Got refresh_ndb
+Oct  2 17:08:15: Received Refresh_ndb from ('127.0.0.1', 42402)
+Oct  2 17:08:47: IPC Connection accepted from ('127.0.0.1', 42408)
+Oct  2 17:08:47: Got status
+Oct  2 17:08:47: Received Status request from ('127.0.0.1', 42408)
+Oct  2 17:08:47: Daemon is running, NameDB was last refreshed on Oct  2 17:08:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:08:47: IPC Connection accepted from ('127.0.0.1', 42410)
+Oct  2 17:08:47: Got close
+Oct  2 17:08:47: Received Close from ('127.0.0.1', 42410)
+Oct  2 17:08:47: Daemon is running, NameDB was last refreshed on Oct  2 17:08:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:08:47: Bye
+
+Oct  2 17:10:04: 
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+Oct  2 17:10:12: IPC Connection accepted from ('127.0.0.1', 42422)
+Oct  2 17:10:12: Got close
+Oct  2 17:10:12: Received Close from ('127.0.0.1', 42422)
+Oct  2 17:10:12: Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:10:12: Bye
+

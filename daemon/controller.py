@@ -1,10 +1,12 @@
-class Daemon:
+class Controller:
     def __init__(self, mode = "quickstart"):
+        from os import path, getpid
+        self.path = path.abspath(".")
+
         from ground_assistant import Core
-        from os.path import abspath
-        self.path = abspath(".")
         self.c = Core(self.path, mode = "startup")
         self.logging = self.c.logging
+        self.ipc_activated = False
         self.closed = False
         self.prepared = False
         self.restarted = 0
@@ -24,6 +26,17 @@ class Daemon:
         self.running = False
         self.prepared = True
         return True
+
+    def ipc(self, port):
+        if self.closed == True: return False
+        if self.ipc_activated == True: return False
+
+        from multiprocessing.connection import Listener
+        address = ('localhost', port)     # family is deduced to be 'AF_INET'
+        authkey = b'ground-assistant-ipc'
+        self.listener = Listener(address, authkey=authkey)
+        self.ipc_activated = True
+        return self.listener
 
     def run(self):
         if self.closed == True: return False
@@ -63,6 +76,7 @@ class Daemon:
 
     def close(self):
         if self.closed == True: return False
+        if self.ipc_activated == True: self.listener.close()
         self.stop()
         self.c.close(mode = "close")
         self.closed = True

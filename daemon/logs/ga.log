@@ -1,0 +1,364 @@
+Oct  2 16:29:29: Starting...
+Oct  2 16:29:29: Core MySQL: ready
+Oct  2 16:29:29: NameDB: ready
+Oct  2 16:29:29: Forking Pipes: ready
+Oct  2 16:29:29: Forking Processes: ready
+Oct  2 16:29:31: Forking Processes: running
+Oct  2 16:29:31: Core APRS: ready
+Oct  2 16:29:31: Daemon ready to run.
+Oct  2 16:29:31: Started screaming...
+Oct  2 16:29:31: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:38:49: Starting...
+Oct  2 16:38:49: Core MySQL: ready
+Oct  2 16:38:49: NameDB: ready
+Oct  2 16:38:49: Forking Pipes: ready
+Oct  2 16:38:49: Forking Processes: ready
+Oct  2 16:38:51: Forking Processes: running
+Oct  2 16:38:51: Core APRS: ready
+Oct  2 16:38:51: Daemon ready to run.
+Oct  2 16:38:51: Started screaming...
+Oct  2 16:38:51: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:39:08: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:39:08: Stoped screaming.
+Oct  2 16:39:08: Stopping...
+Oct  2 16:39:08: Forking Processes: stopped
+Oct  2 16:39:08: Core APRS: disconnected
+Oct  2 16:39:08: Core NameDB: closed
+Oct  2 16:39:08: Core MySQL: closed
+Oct  2 16:39:08: Daemon stopped.
+Oct  2 16:39:24: Starting...
+Oct  2 16:39:24: Core MySQL: ready
+Oct  2 16:39:24: NameDB: ready
+Oct  2 16:39:24: Forking Pipes: ready
+Oct  2 16:39:24: Forking Processes: ready
+Oct  2 16:39:26: Forking Processes: running
+Oct  2 16:39:26: Core APRS: ready
+Oct  2 16:39:26: Daemon ready to run.
+Oct  2 16:39:26: Started screaming...
+Oct  2 16:39:26: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:56:12: Starting...
+Oct  2 16:56:12: Core MySQL: ready
+Oct  2 16:56:12: NameDB: ready
+Oct  2 16:56:12: Forking Pipes: ready
+Oct  2 16:56:12: Forking Processes: ready
+Oct  2 16:56:14: Forking Processes: running
+Oct  2 16:56:14: Core APRS: ready
+Oct  2 16:56:14: Daemon ready to run.
+Oct  2 16:56:14: Started screaming...
+Oct  2 16:56:14: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:56:57: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:56:57: Stoped screaming.
+Oct  2 16:56:57: Stopping...
+Oct  2 16:56:57: Forking Processes: stopped
+Oct  2 16:56:57: Core APRS: disconnected
+Oct  2 16:56:57: Core NameDB: closed
+Oct  2 16:56:57: Core MySQL: closed
+Oct  2 16:56:57: Daemon stopped.
+Oct  2 16:57:07: Starting...
+Oct  2 16:57:07: Core MySQL: ready
+Oct  2 16:57:07: NameDB: ready
+Oct  2 16:57:07: Forking Pipes: ready
+Oct  2 16:57:07: Forking Processes: ready
+Oct  2 16:57:09: Forking Processes: running
+Oct  2 16:57:10: Core APRS: ready
+Oct  2 16:57:10: Daemon ready to run.
+Oct  2 16:57:10: Started screaming...
+Oct  2 16:57:10: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:57:17: Stoped screaming.
+Oct  2 16:57:18: Started screaming...
+Oct  2 16:57:18: Triggered Restart...
+Oct  2 16:57:18: Stoped screaming.
+Oct  2 16:57:18: Stopping...
+Oct  2 16:57:18: Forking Processes: stopped
+Oct  2 16:57:18: Core APRS: disconnected
+Oct  2 16:57:18: Core NameDB: closed
+Oct  2 16:57:18: Core MySQL: closed
+Oct  2 16:57:18: Daemon ready to restart.
+Oct  2 16:57:18: Daemon restarting...
+Oct  2 16:57:18: Core MySQL: ready
+Oct  2 16:57:18: NameDB: ready
+Oct  2 16:57:18: Forking Pipes: ready
+Oct  2 16:57:18: Forking Processes: ready
+Oct  2 16:57:20: Forking Processes: running
+Oct  2 16:57:20: Core APRS: ready
+Oct  2 16:57:20: Daemon ready to run.
+Oct  2 16:57:20: Started screaming...
+Oct  2 16:57:20: Restart complete.
+Oct  2 16:57:20: Triggered NameDB refresh...
+Oct  2 16:57:22: NameDB: Refreshing...
+Oct  2 16:57:47: NameDB refresh complete.
+Oct  2 16:57:47: Requested status:
+Daemon is running, NameDB was last refreshed on Oct  2 16:57:47
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 16:57:47: Stoped screaming.
+Oct  2 16:57:47: Stopping...
+Oct  2 16:57:47: Forking Processes: stopped
+Oct  2 16:57:47: Core APRS: disconnected
+Oct  2 16:57:47: Core NameDB: closed
+Oct  2 16:57:47: Core MySQL: closed
+Oct  2 16:57:47: Daemon stopped.
+Oct  2 16:59:40: Starting...
+Oct  2 16:59:40: Core MySQL: ready
+Oct  2 16:59:40: NameDB: ready
+Oct  2 16:59:40: Forking Pipes: ready
+Oct  2 16:59:40: Forking Processes: ready
+Oct  2 16:59:42: Forking Processes: running
+Oct  2 16:59:42: Core APRS: ready
+Oct  2 16:59:42: Daemon ready to run.
+Oct  2 16:59:42: Started screaming...
+Oct  2 16:59:42: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:00:48: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:00:48: Stoped screaming.
+Oct  2 17:00:48: Stopping...
+Oct  2 17:00:48: Forking Processes: stopped
+Oct  2 17:00:48: Core APRS: disconnected
+Oct  2 17:00:48: Core NameDB: closed
+Oct  2 17:00:48: Core MySQL: closed
+Oct  2 17:00:48: Daemon stopped.
+Oct  2 17:03:05: Starting...
+Oct  2 17:03:05: Core MySQL: ready
+Oct  2 17:03:05: NameDB: ready
+Oct  2 17:03:05: Forking Pipes: ready
+Oct  2 17:03:05: Forking Processes: ready
+Oct  2 17:03:07: Forking Processes: running
+Oct  2 17:03:07: Core APRS: ready
+Oct  2 17:03:07: Daemon ready to run.
+Oct  2 17:03:07: Started screaming...
+Oct  2 17:03:07: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:03:15: Stoped screaming.
+Oct  2 17:03:15: Started screaming...
+Oct  2 17:03:15: Triggered Restart...
+Oct  2 17:03:15: Stoped screaming.
+Oct  2 17:03:15: Stopping...
+Oct  2 17:03:15: Forking Processes: stopped
+Oct  2 17:03:15: Core APRS: disconnected
+Oct  2 17:03:15: Core NameDB: closed
+Oct  2 17:03:15: Core MySQL: closed
+Oct  2 17:03:15: Daemon ready to restart.
+Oct  2 17:03:15: Daemon restarting...
+Oct  2 17:03:15: Core MySQL: ready
+Oct  2 17:03:15: NameDB: ready
+Oct  2 17:03:15: Forking Pipes: ready
+Oct  2 17:03:15: Forking Processes: ready
+Oct  2 17:03:17: Forking Processes: running
+Oct  2 17:03:17: Core APRS: ready
+Oct  2 17:03:17: Daemon ready to run.
+Oct  2 17:03:17: Started screaming...
+Oct  2 17:03:17: Restart complete.
+Oct  2 17:03:17: Triggered NameDB refresh...
+Oct  2 17:03:19: NameDB: Refreshing...
+Oct  2 17:03:46: NameDB refresh complete.
+Oct  2 17:03:47: Requested status:
+Daemon is running, NameDB was last refreshed on Oct  2 17:03:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:03:47: Stoped screaming.
+Oct  2 17:03:47: Stopping...
+Oct  2 17:03:47: Forking Processes: stopped
+Oct  2 17:03:47: Core APRS: disconnected
+Oct  2 17:03:47: Core NameDB: closed
+Oct  2 17:03:47: Core MySQL: closed
+Oct  2 17:03:47: Daemon stopped.
+Oct  2 17:05:32: Starting...
+Oct  2 17:05:32: Core MySQL: ready
+Oct  2 17:05:32: NameDB: ready
+Oct  2 17:05:32: Forking Pipes: ready
+Oct  2 17:05:32: Forking Processes: ready
+Oct  2 17:05:34: Forking Processes: running
+Oct  2 17:05:34: Core APRS: ready
+Oct  2 17:05:34: Daemon ready to run.
+Oct  2 17:05:34: Started screaming...
+Oct  2 17:05:34: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:05:42: Stoped screaming.
+Oct  2 17:05:42: Started screaming...
+Oct  2 17:05:43: Triggered Restart...
+Oct  2 17:05:43: Stoped screaming.
+Oct  2 17:05:43: Stopping...
+Oct  2 17:05:43: Forking Processes: stopped
+Oct  2 17:05:43: Core APRS: disconnected
+Oct  2 17:05:43: Core NameDB: closed
+Oct  2 17:05:43: Core MySQL: closed
+Oct  2 17:05:43: Daemon ready to restart.
+Oct  2 17:05:43: Daemon restarting...
+Oct  2 17:05:43: Core MySQL: ready
+Oct  2 17:05:43: NameDB: ready
+Oct  2 17:05:43: Forking Pipes: ready
+Oct  2 17:05:43: Forking Processes: ready
+Oct  2 17:05:45: Forking Processes: running
+Oct  2 17:05:45: Core APRS: ready
+Oct  2 17:05:45: Daemon ready to run.
+Oct  2 17:05:45: Started screaming...
+Oct  2 17:05:45: Restart complete.
+Oct  2 17:05:45: Triggered NameDB refresh...
+Oct  2 17:05:46: NameDB: Refreshing...
+Oct  2 17:06:11: NameDB refresh complete.
+Oct  2 17:06:11: Requested status:
+Daemon is running, NameDB was last refreshed on Oct  2 17:06:11
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:06:11: Stoped screaming.
+Oct  2 17:06:11: Stopping...
+Oct  2 17:06:11: Forking Processes: stopped
+Oct  2 17:06:11: Core APRS: disconnected
+Oct  2 17:06:11: Core NameDB: closed
+Oct  2 17:06:11: Core MySQL: closed
+Oct  2 17:06:11: Daemon stopped.
+Oct  2 17:08:02: Starting...
+Oct  2 17:08:02: Core MySQL: ready
+Oct  2 17:08:02: NameDB: ready
+Oct  2 17:08:02: Forking Pipes: ready
+Oct  2 17:08:02: Forking Processes: ready
+Oct  2 17:08:04: Forking Processes: running
+Oct  2 17:08:05: Core APRS: ready
+Oct  2 17:08:05: Daemon ready to run.
+Oct  2 17:08:05: Started screaming...
+Oct  2 17:08:05: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:08:12: Stoped screaming.
+Oct  2 17:08:13: Started screaming...
+Oct  2 17:08:13: Triggered Restart...
+Oct  2 17:08:13: Stoped screaming.
+Oct  2 17:08:13: Stopping...
+Oct  2 17:08:13: Forking Processes: stopped
+Oct  2 17:08:13: Core APRS: disconnected
+Oct  2 17:08:13: Core NameDB: closed
+Oct  2 17:08:13: Core MySQL: closed
+Oct  2 17:08:13: Daemon ready to restart.
+Oct  2 17:08:13: Daemon restarting...
+Oct  2 17:08:13: Core MySQL: ready
+Oct  2 17:08:13: NameDB: ready
+Oct  2 17:08:13: Forking Pipes: ready
+Oct  2 17:08:13: Forking Processes: ready
+Oct  2 17:08:15: Forking Processes: running
+Oct  2 17:08:15: Core APRS: ready
+Oct  2 17:08:15: Daemon ready to run.
+Oct  2 17:08:15: Started screaming...
+Oct  2 17:08:15: Restart complete.
+Oct  2 17:08:15: Triggered NameDB refresh...
+Oct  2 17:08:19: NameDB: Refreshing...
+Oct  2 17:08:46: NameDB refresh complete.
+Oct  2 17:08:47: Requested status:
+Daemon is running, NameDB was last refreshed on Oct  2 17:08:46
+We had 1 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:08:47: Stoped screaming.
+Oct  2 17:08:47: Stopping...
+Oct  2 17:08:47: Forking Processes: stopped
+Oct  2 17:08:47: Core APRS: disconnected
+Oct  2 17:08:47: Core NameDB: closed
+Oct  2 17:08:47: Core MySQL: closed
+Oct  2 17:08:47: Daemon stopped.
+Oct  2 17:10:02: Starting...
+Oct  2 17:10:02: Core MySQL: ready
+Oct  2 17:10:02: NameDB: ready
+Oct  2 17:10:02: Forking Pipes: ready
+Oct  2 17:10:02: Forking Processes: ready
+Oct  2 17:10:04: Forking Processes: running
+Oct  2 17:10:04: Core APRS: ready
+Oct  2 17:10:04: Daemon ready to run.
+Oct  2 17:10:04: Started screaming...
+Oct  2 17:10:04: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:10:12: Requested status:
+Daemon is running, NameDB was not refreshed yet.
+We had 0 restarts.
+ Listener "live" is alive.
+ Listener "db" is alive.
+ Screamer is alive.
+
+Oct  2 17:10:12: Stoped screaming.
+Oct  2 17:10:12: Stopping...
+Oct  2 17:10:12: Forking Processes: stopped
+Oct  2 17:10:12: Core APRS: disconnected
+Oct  2 17:10:12: Core NameDB: closed
+Oct  2 17:10:12: Core MySQL: closed
+Oct  2 17:10:12: Daemon stopped.
