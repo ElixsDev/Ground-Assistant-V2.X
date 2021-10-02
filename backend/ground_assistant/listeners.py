@@ -5,6 +5,9 @@ class Listeners:
         pass
 
     def forktolive(pipe):
+        from setproctitle import setproctitle
+        setproctitle("ga_forktolive")
+
         from sys import stderr
         stderr.write("1: Running...\n\n")
 
@@ -29,6 +32,9 @@ class Listeners:
         return
 
     def forktodb(pipe):
+        from setproctitle import setproctitle
+        setproctitle("ga_forktodb")
+
         from datetime import datetime as dt
         from ground_assistant.forktodb import MySQLLogger
 

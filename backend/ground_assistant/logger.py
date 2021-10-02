@@ -10,12 +10,18 @@ class Logger:
             from sys import stderr
             self.out = stderr
         elif runmode == "logfile":
-            self.out = open(kwargs["path"] + "/" + kwargs["name"], "a")
+            from os.path import exists
+            path = kwargs["path"] + "/logs/"
+            if not exists(path):
+                from os import mkdir
+                mkdir(path)
+            self.out = open(path + kwargs["name"], "a")
         else:
             self.out = open("/dev/null", "a")
 
     def append(self, message):
         self.out.write(ct()[4:-5] + ": " + message + "\n")
+        self.out.flush()
 
     def close(self):
         self.out.flush()

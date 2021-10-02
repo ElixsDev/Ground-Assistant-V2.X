@@ -1,5 +1,6 @@
 daemon/ga.conf
 daemon/*.log
+daemon/logs
 daemon/__pycache__
 frontend/index.php.old
 frontend/dataaccess.php
