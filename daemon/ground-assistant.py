@@ -1,18 +1,31 @@
+#Get the opional path from sys.argv
+import sys
+from os import path as op
+
+if len(sys.argv) > 2:
+    path = op.abspath(".")
+elif len(sys.argv) < 2:
+    path = op.abspath(".")
+else:
+    path = sys.argv[1]
+
+#Set the process name
 from setproctitle import setproctitle
 setproctitle("ga_daemon")
 
-from sys import stdout
+stdout = sys.stdout
 from time import sleep
 from controller import Controller
 from ground_assistant.load import ReadConfig
 from ground_assistant.logger import Logger
 
-d = Controller()
-configs = ReadConfig(d.path)
-logging = Logger(config_obj = configs, path = d.path, name = "ipc.log")
+d = Controller(path)
+configs = ReadConfig(path)
+p = configs.getconfig("ci")
+logging = Logger(config_obj = configs, path = path, name = "ipc.log")
 logging.append("\n" + d.status("dual"))
 
-ipc = d.ipc(6000)
+ipc = d.ipc(p["port"],p["password"])
 if ipc == False:
     d.close()
     exit()

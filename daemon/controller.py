@@ -1,7 +1,7 @@
 class Controller:
-    def __init__(self, mode = "quickstart"):
-        from os import path, getpid
-        self.path = path.abspath(".")
+    def __init__(self, path, mode = "quickstart"):
+        from os import getpid
+        self.path = path
 
         from ground_assistant import Core
         self.c = Core(self.path, mode = "startup")
@@ -27,14 +27,13 @@ class Controller:
         self.prepared = True
         return True
 
-    def ipc(self, port):
+    def ipc(self, port, password):
         if self.closed == True: return False
         if self.ipc_activated == True: return False
 
         from multiprocessing.connection import Listener
         address = ('localhost', port)     # family is deduced to be 'AF_INET'
-        authkey = b'ground-assistant-ipc'
-        self.listener = Listener(address, authkey=authkey)
+        self.listener = Listener(address, authkey=password.encode('utf-8'))
         self.ipc_activated = True
         return self.listener
 

@@ -27,16 +27,18 @@ class ReadConfig:
             type = self
 
         if type == "coordinates":
-            return {"north": [float(config[1]), float(config[2])], "east": [float(config[3]), float(config[4])], "altitude": int(config[6])}
+            return {"north": [float(config[1]), float(config[2])], "east": [float(config[3]), float(config[4])], "airport": config[5], "altitude": int(config[6])}
         elif type == "runmode":
             return config[7]
         elif type == "mySQL":
-            return {"username": config[9], "password": config[10]}
+            return {"username": config[8], "password": config[9]}
+        elif type == "ci": #Controll Interface
+            return {"port": int(config[10]), "password": config[11]}
         else:
             raise LoadError("Unknown argument \"" + str(type) + "\" for function getconfig()")
 
     def close(self):
-        pass
+        return True
 
 class mySQL:
     def __init__(self):

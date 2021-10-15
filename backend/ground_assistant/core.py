@@ -66,7 +66,8 @@ class Core:
         self.processes = {"live": live_process, "db": db_process}
 
         sleep(2)
-        Listeners = None
+        Listeners = None   #Needed for restart (?)
+        live_send.send("PATH" + self.path)
         db_send.send("PATH" + self.path)
         self.logging.append("Forking Processes: running")
 
