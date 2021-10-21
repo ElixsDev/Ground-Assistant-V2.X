@@ -82,11 +82,9 @@ class Core:
             self.aprs_logging.append(str(message))
             return
 
-        if beacon["aprs_type"] == "position" and beacon["beacon_type"] == "flarm":
-            if float(beacon["latitude"]) <= float(self.coordinates["north"][0]) and float(beacon["latitude"]) >= float(self.coordinates["north"][1]):
-                if float(beacon["longitude"]) <= float(self.coordinates["east"][0]) and float(beacon["longitude"]) >= float(self.coordinates["east"][1]):
-                    self.pipes["live"].send(beacon)
-                    self.pipes["db"].send(beacon)
+        if beacon["aprs_type"] == "position" and beacon["beacon_type"] == "flarm" and beacon["aircraft_type"] == 1:
+            self.pipes["live"].send(beacon)
+            self.pipes["db"].send(beacon)
         return
 
     def close(self, mode = "close"):

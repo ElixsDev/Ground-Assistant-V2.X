@@ -19,7 +19,7 @@ class ReadConfig:
         else:
             raise LoadError("Config file not found")
 
-        if len(config) != 11: raise LoadError("Config file is corrupted")
+        if len(config) != 14: raise LoadError("Config file is corrupted (" + len(config) + " lines)")
         self.config = config
 
     def getconfig(self, type = None):
@@ -34,6 +34,8 @@ class ReadConfig:
             return {"username": config[8], "password": config[9]}
         elif type == "ci": #Controll Interface
             return {"port": int(config[10]), "password": config[11]}
+        elif type == "li": #Live Interface
+            return {"port": int(config[12]), "password": config[13]}
         else:
             raise LoadError("Unknown argument \"" + str(type) + "\" for function getconfig()")
 

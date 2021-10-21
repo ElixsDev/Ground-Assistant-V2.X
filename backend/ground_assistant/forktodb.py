@@ -4,6 +4,7 @@ class MySQLLogger:
         from ground_assistant.logger  import Logger
         configs = ReadConfig(path)
         self.logging = Logger(config_obj = configs, path = path, name = "forktodb.log")
+        self.keyerrorlogging = Logger(config_obj = configs, path = path, name = "keyerror.log")
         self.mysql = mySQL()
         self.stats = 0
         self.logging.append("Fork ready...")
@@ -30,22 +31,26 @@ class MySQLLogger:
         self.logging.append("Created table")
 
     def write(self, beacon):
-        x = {"INSERT INTO " +
-             str(self.date.today()).replace("-","_") +
-             " VALUES (" +
-             "\"" + str(beacon["timestamp"].time()) + "\"," +
-             "\"" + beacon["beacon_type"] + "\"," +
-             "\"" + beacon["receiver_name"] + "\"," +
-             "\"" + beacon["address"] + "\"," +
-             "\"" + str(beacon["aircraft_type"]) + "\"," +
-             str(round(beacon["latitude"],7)) + "," +
-             str(round(beacon["longitude"],7)) + "," +
-             str(round(beacon["ground_speed"],2)) + "," +
-             str(round(beacon["altitude"],2)) + "," +
-             str(round(beacon["climb_rate"],2)) + "," +
-             str(round(beacon["turn_rate"],2)) + "," +
-             str(beacon["gps_quality"]["horizontal"]) + "," +
-             str(beacon["gps_quality"]["vertical"]) + ");"}
+        try:
+            x = {"INSERT INTO " +
+                 str(self.date.today()).replace("-","_") +
+                 " VALUES (" +
+                 "\"" + str(beacon["timestamp"].time()) + "\"," +
+                 "\"" + beacon["beacon_type"] + "\"," +
+                 "\"" + beacon["receiver_name"] + "\"," +
+                 "\"" + beacon["address"] + "\"," +
+                 "\"" + str(beacon["aircraft_type"]) + "\"," +
+                 str(round(beacon["latitude"],7)) + "," +
+                 str(round(beacon["longitude"],7)) + "," +
+                 str(round(beacon["ground_speed"],2)) + "," +
+                 str(round(beacon["altitude"],2)) + "," +
+                 str(round(beacon["climb_rate"],2)) + "," +
+                 str(round(beacon["turn_rate"],2)) + "," +
+                 str(beacon["gps_quality"]["horizontal"]) + "," +
+                 str(beacon["gps_quality"]["vertical"]) + ");"}
+        except KeyError:
+            self.keyerrorlogging.append(beacon)
+            return False
 
         self.mysql.sendquery(''.join(list(x)))
         self.mysql.commit()

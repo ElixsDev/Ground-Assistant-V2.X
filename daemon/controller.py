@@ -129,6 +129,7 @@ class Controller:
 
     def show(self):
         self.c.pipes["db"].send("SHOW")
+        self.c.pipes["live"].send("SHOW")
         return True
 
     def refresh_ndb(self, ifnotdoneyet = False):

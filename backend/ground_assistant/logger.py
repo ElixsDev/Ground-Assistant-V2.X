@@ -20,9 +20,11 @@ class Logger:
             self.out = open("/dev/null", "a")
 
     def append(self, message):
-        self.out.write(ct()[4:-5] + ": " + message + "\n")
+        self.out.write(ct()[4:-5] + ": " + str(message) + "\n")
         self.out.flush()
+        return True
 
     def close(self):
         self.out.flush()
         self.out.close()
+        return True

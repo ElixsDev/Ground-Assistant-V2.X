@@ -41,8 +41,8 @@ except:
 try:
     from ground_assistant.load import ReadConfig
     c = ReadConfig(path)
-except:
-    print("Incorrect path")
+except Exception as error:
+    print("Incorrect path: " + error)
     sys.exit(1)
 #Functions:
 def start(path):
