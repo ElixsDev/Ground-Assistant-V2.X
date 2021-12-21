@@ -4,10 +4,8 @@ body {
 
 
 #header {
-	position: fixed;
-        top: 18px;
-        left: 8px;
-        right: 8px;
+	position: fixed
+        width: 99%;
 }
 
 #header h1 {
@@ -22,11 +20,10 @@ body {
 
 
 #main {
-        position: fixed;
-	top: 95px;
+	position: fixed;
+	top: 90px;
 	bottom: 40px;
-        left: 8px;
-        right: 8px;
+        width: 98.7%;
         background-color: LightSkyBlue;
 }
 
@@ -34,15 +31,13 @@ body {
 #footer {
         position: fixed;
         bottom: 7.5px;
-        left: 8px;
-        right: 8px;
+        width: 99%;
         font-size: 0.75em;
 }
 
 #footer p {
         display:inline;
 }
-
 
 #rel_landings {
         border-color: black;

@@ -6,6 +6,8 @@ class Core:
         from ground_assistant.load import ReadConfig, mySQL
         from ground_assistant.logger  import Logger
         from ground_assistant.namedb import NameDB
+        from time import ctime as ct
+        self.ct = ct
 
         self.path = path
         configs = ReadConfig(path)
@@ -81,6 +83,8 @@ class Core:
         except Exception as message: #self.aprs_error as message:
             self.aprs_logging.append(str(message))
             return
+
+        if beacon[]
 
         if beacon["aprs_type"] == "position" and beacon["beacon_type"] == "flarm" and beacon["aircraft_type"] == 1:
             self.pipes["live"].send(beacon)

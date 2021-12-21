@@ -26,7 +26,7 @@ else:
 
 try:
     upath = sys.argv[position]
-    if upath == "--":
+    if upath[:2] != "--":
         path = devpath
     else:
         upath = upath[2:]
@@ -42,8 +42,9 @@ try:
     from ground_assistant.load import ReadConfig
     c = ReadConfig(path)
 except Exception as error:
-    print("Incorrect path: " + error)
+    print("Incorrect path: " + str(error))
     sys.exit(1)
+
 #Functions:
 def start(path):
     import os
@@ -90,16 +91,32 @@ elif argument == "restart":
     p = c.getconfig("ci")
     address = ('localhost', p["port"])
     password = p["password"].encode('utf-8')
-    conn = Client(address, authkey=password)
+
+    try:
+        conn = Client(address, authkey=password)
+    except ConnectionRefusedError:
+        print("Ground-Assistant is not running.")
+        sys.exit(0)
 
     if mode == "direct":
         conn.send("restart")
         status = conn.recv()
         if status == True: print("Successfully restarted.")
         else: print("Failed restarting.")
+
     elif mode == "fully":
+        from sys import stdout
+        from time import sleep
         conn.send("close")
         print("Sent close.")
+        stdout.write("Waiting")
+        stdout.flush()
+        for i in range(0,5):
+            sleep(1)
+            stdout.write(".")
+            stdout.flush()
+        stdout.write("\n")
+        stdout.flush()
         print(start(path))
 
 else:
@@ -124,4 +141,4 @@ else:
     except:
         print("Ground-Assistant is not running.")
 
-sys.exit()
+sys.exit(0)

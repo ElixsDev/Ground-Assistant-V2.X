@@ -11,11 +11,25 @@ class Listeners:
         from ground_assistant.load import ReadConfig, mySQL
         from ground_assistant.logger import Logger  #Currently the config object is needed
         from ground_assistant.planelib import Library
+        #from ground_assistant.planeserver import server
         from multiprocessing.connection import Listener
-        #from multithreading import Thread
-
+        from threading import Thread
         from sys import stderr
-        stderr.write("1: Running...\n\n")
+
+        def server():
+            while kill == False:
+                with listener.accept() as connection:
+                    request = connection.recv()
+                    if request == "Stop Key: ljadljcg":
+                        return
+
+                    try:
+                        response = lib.output(request)
+                    except PlaneLibArgumentError:
+                        response = "Invalid Argument(s): " + str(request)
+
+                    connection.send(response)
+            return
 
         kill = False
         wait = False
@@ -34,10 +48,12 @@ class Listeners:
 
                 li = configs.getconfig("li")
                 listener = Listener(('localhost', li["port"]), authkey=li["password"].encode('utf-8'))
+                serverthread = Thread(target=server)
+                serverthread.start()
 
                 init = True
                 logging.append("Started.")
-                stderr.write("started.\n")
+                #stderr.write("started.\n")
                 continue
 
             elif beacon == "KILL":
@@ -49,15 +65,6 @@ class Listeners:
             elif beacon == "CONTINUE":
                 wait = False
                 continue
-            elif beacon == "SHOW":
-                pr = []
-                output = lib.output()
-                for item in output:
-                    pr.append(item[1][3])
-
-                from sys import stderr
-                stderr.write(str(pr) + "\n")
-                continue
 
             if init == False:
                 continue
@@ -67,12 +74,18 @@ class Listeners:
         if init == True:
             configs.close()
             mysql.close()
+
+            from multiprocessing.connection import Client
+            client = Client(('localhost', li["port"]), authkey=li["password"].encode('utf-8'))
+            client.send("Stop Key: ljadljcg")
+            client.close()
+            serverthread.join()
+
             listener.close()
             lib.close()
             logging.append("Closed.")
             logging.close()
 
-        stderr.write("1: Ended\n\n")
         return
 
     def forktodb(pipe):

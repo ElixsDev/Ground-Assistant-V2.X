@@ -1,0 +1,35 @@
+<div id="landings">
+    <?php
+        
+
+                if ($namerow["cn"] == "") {
+                    $cn = "XX";
+                } else {
+                    $cn = $namerow["cn"];
+                }
+
+                if ($namerow["registration"] == "") {
+                    $clearname = "X-XXXX";
+                } else {
+                    $clearname = $namerow["registration"];
+                }
+
+                if ($namerow["aircraft_model"] == "") {
+                    $aircraft = "unknown";
+                } else {
+                    $aircraft = $namerow["aircraft_model"];
+                }
+
+                $antidouble[i] = $row["device_id"];
+                $height = $row["msl"];
+
+                if (in_array($row["device_id"], $planes)) {
+                    echo $clearname.", ".$aircraft.", ".$height."m</br>";
+                }
+                $planes[i] = $row["device_id"];
+            }
+        } else {
+            $result[0] = "0 results";
+        }
+    ?>
+</div>

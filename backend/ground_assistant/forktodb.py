@@ -1,7 +1,7 @@
 class MySQLLogger:
     def __init__(self, path):
         from ground_assistant.load import ReadConfig, mySQL
-        from ground_assistant.logger  import Logger
+        from ground_assistant.logger import Logger
         configs = ReadConfig(path)
         self.logging = Logger(config_obj = configs, path = path, name = "forktodb.log")
         self.keyerrorlogging = Logger(config_obj = configs, path = path, name = "keyerror.log")
@@ -14,7 +14,8 @@ class MySQLLogger:
         x = {"CREATE TABLE IF NOT EXISTS " +
              str(date.today()).replace("-","_") +                          #The name is todays date,
              " ( time TIME," +                                             #First row is a timestamp,
-             " beacon_type VARCHAR(255)," +                                #second the type of beacon
+             " ref_time TIME," +                                           #second row is another timestamp,
+             " beacon_type VARCHAR(255)," +                                #the type of beacon
              " receiver VARCHAR(255)," +                                   #the receiver,
              " device_id VARCHAR(6)," +                                    #FLARM ID,
              " type VARCHAR(20)," +                                        #type of aircraft,
@@ -36,6 +37,7 @@ class MySQLLogger:
                  str(self.date.today()).replace("-","_") +
                  " VALUES (" +
                  "\"" + str(beacon["timestamp"].time()) + "\"," +
+                 "\"" + str(beacon["reference_timestamp"].time()) + "\"," +
                  "\"" + beacon["beacon_type"] + "\"," +
                  "\"" + beacon["receiver_name"] + "\"," +
                  "\"" + beacon["address"] + "\"," +
@@ -48,8 +50,8 @@ class MySQLLogger:
                  str(round(beacon["turn_rate"],2)) + "," +
                  str(beacon["gps_quality"]["horizontal"]) + "," +
                  str(beacon["gps_quality"]["vertical"]) + ");"}
-        except KeyError:
-            self.keyerrorlogging.append(beacon)
+        except KeyError as e:
+            self.keyerrorlogging.append(e)
             return False
 
         self.mysql.sendquery(''.join(list(x)))

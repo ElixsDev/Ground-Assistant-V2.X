@@ -1,3 +1,5 @@
+from ground_assistant.errorhandlers import *
+
 class Library:
     def __init__(self, coordinates, mysql):
         from datetime import datetime
@@ -31,22 +33,24 @@ class Library:
         return True
 
     def output(self, request = {"geocat": "EDFM", "altcat": "grounded"}):
-        ret = []
+        ret = {}
         rem = []
+
+        if type(request) is not dict: raise PlaneLibArgumentError("Request should be a dictionary")
 
         for key in self.index:
             if self.index[key].categorys["geo"] == request["geocat"] and self.index[key].is_not_expired():
                 if self.index[key].categorys["alt"] == request["altcat"]:
-                    ret.append([key, None, self.index[key]])
+                    ret[key] = [None, self.index[key]]
 
             elif not self.index[key].is_not_expired():
                 rem.append(key)
 
-        for item in ret:
-            device_id = item[0]
+        for key in ret:
+            device_id = key
             query = "SELECT * FROM ogn_name_db WHERE device_id = \"" + device_id + "\";"
             result = self.mysql.sendquery(query)
-            item[1] = result
+            ret[key][0] = result
 
         for key in rem:
             self.index[key].close()

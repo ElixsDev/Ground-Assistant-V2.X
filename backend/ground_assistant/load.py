@@ -17,7 +17,7 @@ class ReadConfig:
                     config.append(x)
             configfile.close()
         else:
-            raise LoadError("Config file not found")
+            raise LoadError("Config file not found at " + configpath)
 
         if len(config) != 14: raise LoadError("Config file is corrupted (" + len(config) + " lines)")
         self.config = config
@@ -75,8 +75,10 @@ class mySQL:
         self.cursor.execute(query)
         try:
             res = self.cursor.fetchall()
+            self.multiline = res
             res = [x for sublist in res for x in sublist]
         except sql.errors.InterfaceError:
+            self.multiline = None
             res = None
 
         return res

@@ -3,9 +3,6 @@ class Controller:
         from os import getpid
         self.path = path
 
-        from time import sleep
-        self.sleep = sleep
-
         from ground_assistant import Core
         self.c = Core(self.path, mode = "startup")
         self.logging = self.c.logging
@@ -43,14 +40,10 @@ class Controller:
     def run(self):
         if self.closed == True: return False
         self.screamer_process.start()
-
+        self.sleep(5)
         if not self.screamer_process.is_alive():
-            success = self.testscreamer()
-            if success:
-                self.logging.append("Started screaming...")
-                self.running = True
-                return True
-            elif not success: return False
+            tests = self.screamertest()
+            if tests = True:
         else:
             self.logging.append("Started screaming...")
             self.running = True
@@ -163,18 +156,3 @@ class Controller:
         self.logging.append("NameDB refresh complete.")
         self.refreshed = ctime()[4:-5]
         return True
-
-    def testscreamer(self):
-        from ground_assistant.testscreamer import testscreamer as test
-        self.screamer_process.kill()
-        self.screamer_process.join()
-        self.screamer_process.close()
-        self.screamer_process = None
-        self.screamer_process = Process(target=self.screamer.run, kwargs={"callback": self.c.scream, "autoreconnect">
-
-        success = test()
-        if not success:
-            return False
-        elif success:
-            self.screamer_process.start()
-            self.sleep(5)

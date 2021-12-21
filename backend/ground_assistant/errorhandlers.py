@@ -9,3 +9,6 @@ class httpError(Exception):
 
 class APRSPackageError(Exception):
     pass
+
+class PlaneLibArgumentError(Exception):
+    pass
