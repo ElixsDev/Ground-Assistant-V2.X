@@ -1,0 +1,6 @@
+let mapOptions = {
+    center: [49.4740, 8.5174],
+    zoom: 10
+}
+
+let map = 
