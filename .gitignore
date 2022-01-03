@@ -11,3 +11,4 @@ testunit
 *.swp
 *.log
 *.conf
+*.pem

@@ -119,3 +119,4 @@
 </div>
 
 <script src="scripts/loader.js"></script>
+<script src="scripts/sockettest.js"></script>

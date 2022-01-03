@@ -83,7 +83,7 @@ elif argument == "restart":
         if mode == "--direct":
             mode = "direct"
         else:
-            raise Exception()
+            raise Exception("Unknown argument.")
     except:
         mode = "fully"
 

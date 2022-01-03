@@ -45,7 +45,7 @@ class Controller:
         self.screamer_process.start()
 
         if not self.screamer_process.is_alive():
-            success = self.testscreamer()
+            success = True #self.testscreamer()
             if success:
                 self.logging.append("Started screaming...")
                 self.running = True
@@ -163,14 +163,14 @@ class Controller:
         self.logging.append("NameDB refresh complete.")
         self.refreshed = ctime()[4:-5]
         return True
-
+"""
     def testscreamer(self):
         from ground_assistant.testscreamer import testscreamer as test
         self.screamer_process.kill()
         self.screamer_process.join()
         self.screamer_process.close()
         self.screamer_process = None
-        self.screamer_process = Process(target=self.screamer.run, kwargs={"callback": self.c.scream, "autoreconnect">
+        self.screamer_process = Process()
 
         success = test()
         if not success:
@@ -178,3 +178,4 @@ class Controller:
         elif success:
             self.screamer_process.start()
             self.sleep(5)
+"""
