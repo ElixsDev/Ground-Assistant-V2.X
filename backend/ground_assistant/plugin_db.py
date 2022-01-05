@@ -7,14 +7,14 @@ def main(pipe, path):
     from datetime import datetime as dt
     from ground_assistant.forktodb import MySQLLogger
 
-    kill = False
+    keepalive = True
     wait = False
     init = True
     show = 0
 
     logger = MySQLLogger(path)
 
-    while kill == False:
+    while keepalive:
         beacon = pipe.recv()
 
         #if str(type(beacon)) == "<class 'str'>" and beacon[0:4] == "PATH" and init == False:
@@ -24,7 +24,7 @@ def main(pipe, path):
         #    continue
 
         if beacon[:4] == "KILL":
-            if beacon[4:] == "ALL" or beacon[4:] == "plugin_db":
+            if beacon[4:] == "plugin_db":
                 kill = True
                 break
             else:
@@ -47,7 +47,8 @@ def main(pipe, path):
             if show > 0:
                 stderr.write("1: " + str(beacon) + "\n")
                 show -= 1
-            logger.write(beacon)
+            #logger.write(beacon)
+            print("potential write")
 
     if init == True: logger.close()
     return

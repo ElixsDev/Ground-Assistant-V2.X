@@ -1,11 +1,10 @@
 class TheFork:
     def __init__(self, path, pipe_in, pipe_out):
         import os
-        from multiprocessing import Process, Pipe
-        from threading import Thread, Event
+        from multiprocessing import Process
+        
 
         self.Process = Process
-        self.Pipe = Pipe
         self.path = path
         self.pipe_in = pipe_in
         self.pipe_out = pipe_out
@@ -14,9 +13,7 @@ class TheFork:
         self.pool = {}
         self.pipes = {}
 
-        self.dstthread = Thread(target=self.distr_center, name="DistributionCenter")
-        self.kill = Event()
-        self.dstthread.start()
+        self.keepalive = True
 
         self.memorypath = path + "/thefork.conf"
         if os.path.exists(self.memorypath):
@@ -34,17 +31,13 @@ class TheFork:
         self.memory = open(self.memorypath, "a")
 
     def distr_center(self):
-        while not self.kill.is_set():
+        while self.keepalive:
             beacon = self.pipe_in.recv()
-            try:
-                for item in self.pipes:
-                    try:
-                        self.pipes[item].send(beacon)
-                    except BrokenPipeError:
-                        self.close(item)
-            except RuntimeError as error:
-                 print(f'Catched RuntimeError: {error}')
-        return
+            for item in self.pipes:
+                try:
+                    self.pipes[item].send(beacon)
+                except:
+                    self.close(item)
 
     def register(self, id):
         reserved_keys = ["all"]
@@ -84,16 +77,16 @@ class TheFork:
 
     def load(self, ids):
         ids = [ids]
-        if not ids[0] in self.plugins and ids[0] != "all" : return f'{ids[0]} is not registered'
+        if not ids[0] in self.plugins: return f'{ids[0]} is not registered'
         if ids[0] == "all": ids = self.plugins
 
-        for item in ids:
+        for item in self.plugins:
             if item in self.pool: continue
-            p_recv, p_send = self.Pipe()
+            p_recv, p_send = Pipe()
             self.pool[item] = self.Process(target=self.plugins[item].main, args=(p_recv, self.path,))
             self.pool[item].start()
             self.pipes[item] = p_send
-        return f'loaded {ids}'
+        return "loaded {ids}"
 
     def restart(self, id):
         if not id in self.pool and id != "all": return f'{id} is not loaded'
@@ -104,10 +97,10 @@ class TheFork:
     def close(self, ids):
         if len(self.pool) == 0: return f'closed {id}'
 
-        if ids == "all": ids = list(self.pool.keys())
-        if type(ids) == str: ids = [ids]
+        ids = [ids]
+        if ids[0] == "all": ids = self.pool
 
-        for item in ids:
+        for item in ids.copy():
             if not item in self.pool:
                 ids = f'none, {ids[0]} is not loaded'
                 continue
@@ -126,12 +119,6 @@ class TheFork:
 
     def end(self):
         self.close("all")
-
-        self.kill.set()
-        self.pipe_out.send("") #If there are no incomming beacons, the loop won't check the event
-        if self.dstthread.is_alive(): self.dstthread.join(5)
-        if self.dstthread.is_alive(): print("failed joining thread")
-
         self.memory.flush()
         self.memory.close()
-        return "ended"
+        return "Ended."
