@@ -1,14 +1,20 @@
 class TheFork:
-    def __init__(self, path, pipe_in, pipe_out):
+    def __init__(self, path, out = None):
         import os
         from multiprocessing import Process, Pipe
         from threading import Thread, Event
+        from importlib import reload, invalidate_caches
+
+        if out == None: out = open(os.devnull, 'a')
+        out.write("Startup\n")
 
         self.Process = Process
         self.Pipe = Pipe
+        self.recache = invalidate_caches
+        self.reload_mod = reload #self.reload is a function in this file
         self.path = path
-        self.pipe_in = pipe_in
-        self.pipe_out = pipe_out
+        self.out = out
+        self.pipe_in, self.pipe_out = Pipe()
 
         self.plugins = {}
         self.pool = {}
@@ -25,7 +31,7 @@ class TheFork:
                 x = line.strip()
                 if x[:1] != "#":
                     try:
-                        exec(f'import {x} as np\nself.plugins["{x}"] = np\n')
+                        exec(f'from ground_assistant.plugins import {x} as np\nself.plugins["{x}"] = np\n')
                     except:
                         pass
 
@@ -33,6 +39,8 @@ class TheFork:
 
         self.memory = open(self.memorypath, "a")
 
+#Handling of Data-Output:
+    #Thread
     def distr_center(self):
         while not self.kill.is_set():
             beacon = self.pipe_in.recv()
@@ -41,22 +49,25 @@ class TheFork:
                     try:
                         self.pipes[item].send(beacon)
                     except BrokenPipeError:
+                        self.out.write(f'Catched BrokenPipeError for {item}\n')
                         self.close(item)
             except RuntimeError as error:
-                 print(f'Catched RuntimeError: {error}')
+                 self.out.write(f'Catched RuntimeError: {error}\n')
         return
 
     def register(self, id):
-        reserved_keys = ["all"]
+        reserved_keys = ["all", "distr_center", "main"]
         if id in reserved_keys: return f'{id} is not a valid PlugIn name'
-
         try:
-            exec(f'import {id} as np\nif np.mark != "{id}": raise AttributeError\nself.plugins["{id}"] = np')
+            self.recache()
+            exec(f'import ground_assistant.plugins.{id} as np\n'
+               + f'if np.mark != "{id}": raise AttributeError(np.mark + " != {id}")\n'
+               + f'self.plugins["{id}"] = np')
 
         except ImportError as ie:
             return str(ie)
         except AttributeError as ae:
-            return "PlugIn is not valid"
+            return f'PlugIn is not valid (ae)'
 
         else:
             self.memory.write(id + "\n")
@@ -81,6 +92,17 @@ class TheFork:
         memorydel.close()
 
         return f'removed {id}'
+
+    def reload(self, ids):
+        ids = [ids]
+        if not ids[0] in self.plugins and ids[0] != "all" : return f'{ids[0]} is not registered'
+        if ids[0] == "all": ids = self.plugins
+
+        for item in ids:
+            self.close(item)
+            self.plugins[item] = self.reload_mod(self.plugins[item])
+            self.load(item)
+        return f'reloaded {ids}'
 
     def load(self, ids):
         ids = [ids]
@@ -124,14 +146,53 @@ class TheFork:
                 self.pool.pop(item)
         return f'closed {ids}'
 
+    #Shortcuts:
+    def loadall(self):
+        return self.load("all")
+
+    def reloadall(self):
+        return self.reload("all")
+
+    def restartall(self):
+        return self.restart("all")
+
+    def closeall(self):
+        return self.close("all")
+
+
+#Handling of Data-Input:
+    def receiver_load(self):
+        from ground_assistant.plugins.receiver import Receiver
+        self.receiver = Receiver(self.pipe_out, self.path)
+        if not self.receiver.init(): return self.receiver.crashreport
+        self.receiver.run()
+        return "Receiver loaded"
+
+    def receiver_close(self):
+        try:
+            self.receiver.close()
+            return "Receiver closed"
+        except AttributeError:
+            return "Receiver not loaded"
+
+    def receiver_reload(self):
+        self.receiver_close()
+        self.receiver_load()
+        return "Receiver reloaded"
+
+#Generall:
     def end(self):
-        self.close("all")
+        self.receiver_close()
+        self.closeall()
 
         self.kill.set()
         self.pipe_out.send("") #If there are no incomming beacons, the loop won't check the event
         if self.dstthread.is_alive(): self.dstthread.join(5)
-        if self.dstthread.is_alive(): print("failed joining thread")
+        if self.dstthread.is_alive(): self.out.write("failed joining thread\n")
 
         self.memory.flush()
         self.memory.close()
+        self.out.write("Ended\n")
+        self.out.flush()
+        self.out.close()
         return "ended"

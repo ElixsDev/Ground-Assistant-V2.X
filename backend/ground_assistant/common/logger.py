@@ -1,4 +1,4 @@
-from ground_assistant.errorhandlers import *
+from ground_assistant.common.errorhandlers import *
 
 class Logger:
     def __init__(self, **kwargs):
@@ -28,3 +28,6 @@ class Logger:
         self.out.flush()
         self.out.close()
         return True
+
+def version():
+    return "logger.py: 1.0"

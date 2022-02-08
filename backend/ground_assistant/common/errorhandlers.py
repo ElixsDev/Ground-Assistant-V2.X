@@ -12,3 +12,6 @@ class APRSPackageError(Exception):
 
 class PlaneLibArgumentError(Exception):
     pass
+
+def version():
+    return "errorhandlers.py: 1.0"

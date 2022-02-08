@@ -1,4 +1,4 @@
-from ground_assistant.errorhandlers import *
+from ground_assistant.common.errorhandlers import *
 
 class Library:
     def __init__(self, coordinates, mysql):
@@ -23,12 +23,11 @@ class Library:
     def clean(self, age = 5):
         rem = []
         for key in self.index:
-            if not self.index[key].is_not_expired(age = age):
-                rem.append(key)
+            if self.index[key].is_expired(age = age): rem.append(key)
 
         for key in rem:
             self.index[key].close()
-            del self.index[key]
+            self.index.remove(key)
 
         return True
 
@@ -64,4 +63,5 @@ class Library:
     def close(self):
         for key in self.index:
             self.index[key].close()
+        self = None
         return True

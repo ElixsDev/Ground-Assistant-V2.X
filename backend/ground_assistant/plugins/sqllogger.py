@@ -1,11 +1,11 @@
 class MySQLLogger:
     def __init__(self, path):
-        from ground_assistant.load import ReadConfig, mySQL
-        from ground_assistant.logger import Logger
+        from ground_assistant.common.load import ReadConfig, mySQL
+        from ground_assistant.common.logger import Logger
         configs = ReadConfig(path)
         self.logging = Logger(config_obj = configs, path = path, name = "forktodb.log")
         self.keyerrorlogging = Logger(config_obj = configs, path = path, name = "keyerror.log")
-        self.mysql = mySQL()
+        self.mysql = mySQL(configs)
         self.stats = 0
         self.logging.append("Fork ready...")
 
