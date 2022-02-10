@@ -49,7 +49,6 @@ class Web_Socket():
             async for _ in websocket:
                 pass
         finally:
-            await websocket.send("unregistered")
             self.connected.remove(websocket)
             self.out.write("(connection) closed\n")
             self.out.flush()

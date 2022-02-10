@@ -1,6 +1,7 @@
 class NewPlane:
-    def __init__(self, beacon, airports):
+    def __init__(self, beacon, airports, ndb):
         self.airports = airports
+        self.ndb = ndb
         self.categorys = {"geo": None}
         self.update(beacon)
 
@@ -17,7 +18,7 @@ class NewPlane:
 
         self.identity = {"address": beacon["address"] if "address" in beacon.keys() else None,
                          "aircraft_type": beacon["aircraft_type"] if "aircraft_type" in beacon.keys() else None,
-                          "name": beacon["name"] if "name" in beacon.keys() else None}
+                         "name": beacon["name"] if "name" in beacon.keys() else None}
 
         self.position = {"latitude": beacon["latitude"] if "latitude" in beacon.keys() else None,
                          "longitude": beacon["longitude"] if "longitude" in beacon.keys() else None}
@@ -45,6 +46,8 @@ class NewPlane:
 
         self.error_count = beacon["error_count"] if "error_count" in beacon.keys() else None
 
+        self.planedata = self.ndb(self.identity["address"])
+
         #Categorize:
         airport = self.airports.find(self.position, self.categorys["geo"])
         if airport:
@@ -59,7 +62,9 @@ class NewPlane:
 
         else: self.categorys = {"geo": None, "alt": "away"}
 
-        self.relevant = {"receiver_name": self.aprs_info["receiver_name"]}
+        self.relevant = {"receiver_name": self.aprs_info["receiver_name"],
+                         "timestamp": self.timestamps["timestamp"]}
+        self.relevant.update(self.planedata)
         self.relevant.update(self.identity)
         self.relevant.update(self.position)
         self.relevant.update(self.vectors)

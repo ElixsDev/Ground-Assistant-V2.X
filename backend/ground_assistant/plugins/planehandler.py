@@ -1,13 +1,14 @@
 class PlaneHandler:
-    def __init__(self, path):
+    def __init__(self, path, ndb):
         from ground_assistant.plugins.plane import NewPlane
         self.NewPlane = NewPlane
         self.airports = AirportHandler(path)
         self.index = {}
+        self.ndb = ndb
 
     def add(self, beacon):
         if beacon["address"] in self.index.keys(): self.index[beacon["address"]].update(beacon)
-        else: self.index[beacon["address"]] = self.NewPlane(beacon, self.airports)
+        else: self.index[beacon["address"]] = self.NewPlane(beacon, self.airports, self.ndb)
         return
 
     def clean(self, age = 5 * 60): #Age in seconds, default is 5 minutes
@@ -18,12 +19,12 @@ class PlaneHandler:
     def data(self, geo = "EDFM", alt = ["grounded", "landing", "nearby", "away"]):
         out = []
         for key in self.index:
+            #print(self.index[key].categorys, self.index[key].is_expired())
             if (self.index[key].categorys["geo"] == geo and
                 self.index[key].categorys["alt"] in alt and
                 not self.index[key].is_expired()):
 
                 out.append(self.index[key].relevant)
-
         return out
 
     def status(self):

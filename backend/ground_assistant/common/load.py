@@ -41,8 +41,13 @@ class ReadConfig:
 
 class mySQL:
     def __init__(self, configs):
+        self.init(configs)
+
+    def init(self, configs):
          import mysql.connector as sql
          self.InterfaceError = sql.errors.InterfaceError
+         self.OperationalError = sql.errors.OperationalError
+
          credentials = configs.getconfig("mySQL")
 
          try: self.connection = sql.connect(host="localhost",
@@ -56,16 +61,28 @@ class mySQL:
          res = [x for sublist in res for x in sublist]
          if not "ogn" in res: self.cursor.execute("CREATE DATABASE ogn;")
          self.cursor.execute("use ogn;")
+         return
 
     def sendquery(self, query):
-        self.cursor.execute(query)
+        try:
+            self.cursor.execute(query)
+        except self.OperationalError:
+            try:
+                self.close()
+                self.init()
+                self.cursor.execute(query)
+            except self.OperationalError as er:
+                self.crashreport = er
+                res = False
+
         try:
             res = self.cursor.fetchall()
             self.multiline = res
             res = [x for sublist in res for x in sublist]
-        except self.InterfaceError:
+        except self.InterfaceError as er:
+            self.crashreport = er
             self.multiline = None
-            res = None
+            res = False
 
         return res
 

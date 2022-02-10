@@ -1,6 +1,6 @@
 mark = "plugin_live"
 
-def main(pipe, path):
+def main(pipe, path, ndb):
     from setproctitle import setproctitle
     setproctitle(mark)
 
@@ -14,14 +14,14 @@ def main(pipe, path):
     wait = False
     p_recv, p_send = Pipe()
     flag = Event()
-    handler = PlaneHandler(path)
+    handler = PlaneHandler(path, ndb)
     openthreads = {}
 
     def get_cat(code):
         got_parameter = PlaneHandler.decode(code)
         if not code in openthreads.keys():
             #optionally add stdout to get some info
-            openthreads[code] = Thread(target=handler.datathread, args=(p_send, flag, 5, got_parameter, code))
+            openthreads[code] = Thread(target=handler.datathread, args=(p_send, flag, 5, got_parameter, code), name = code)
             openthreads[code].start()
         return
 
@@ -33,10 +33,10 @@ def main(pipe, path):
         return
 
     serverobj = Web_Socket(path, p_recv, flag, handler.status, get_cat) #optionally add stdout to get some info
-    serverthread = Thread(target=serverobj.run)
+    serverthread = Thread(target=serverobj.run, name = "WebSocket")
     serverthread.start()
 
-    radarthread = Thread(target=radar, args=(p_send,))
+    radarthread = Thread(target=radar, args=(p_send,), name = "Radar")
     radarthread.start()
     init = True
 
@@ -64,7 +64,7 @@ def main(pipe, path):
         flag.set()
         p_send.send("PingPong")
         serverthread.join()
-        for item in openthreads: item.join()
+        for item in openthreads: openthreads[item].join()
         openthreads["Trigger"] = "Trigger" #In case no thread was spawned
         radarthread.join()
     return

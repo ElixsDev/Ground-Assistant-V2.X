@@ -1,4 +1,4 @@
-expected_id = "____glna"
+expected_id = "EDFMglna"
 const socket = new WebSocket('wss://eliservices.servehttp.com:5010');
 
 socket.addEventListener('open', function (event) {

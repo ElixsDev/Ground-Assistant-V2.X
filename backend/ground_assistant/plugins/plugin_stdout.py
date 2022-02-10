@@ -1,6 +1,6 @@
 mark = "plugin_stdout"
 
-def main(pipe, path):
+def main(pipe, path, ndb):
     from setproctitle import setproctitle
     setproctitle(mark)
 
@@ -8,4 +8,4 @@ def main(pipe, path):
     while alive:
         beacon = pipe.recv()
         print(beacon)
-        if beacon == "KILLplugin_test": alive = False
+        if beacon == "KILLplugin_stdout": alive = False

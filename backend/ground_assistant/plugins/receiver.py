@@ -1,11 +1,12 @@
-#Receives Data from ogn Network
+#Receives data from ogn network
 
 mark = "" #Prevents from beeing registered as normal plugin
 
-class Receiver():
+class Receiver:
     def __init__(self, pipe, path):
         self.path = path
         self.pipe = pipe
+        self.allowed_types = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"]
 
     def init(self):
         try:
@@ -40,7 +41,7 @@ class Receiver():
 
         if (beacon["aprs_type"] == "position" and
             beacon["beacon_type"] == "flarm" and
-            beacon["aircraft_type"] == 1):
+            beacon["aircraft_type"] in self.allowed_types):
             self.pipe.send(beacon)
         return
 

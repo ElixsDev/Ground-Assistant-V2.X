@@ -1,83 +1,71 @@
-from ground_assistant.errorhandlers import *
-
 class NameDB:
-    def __init__(self,**kwargs):
-        from multiprocessing import Process
-        self.process = Process
-
-        self.logging = kwargs["logging"]
-
-        self.sql_raw = kwargs["sql"]
-        self.sql_ready = self.sql_raw()
-
-        self.logging.append("NameDB: ready")
-        return
-
-    def refresh_insertdb(self, json, sql_raw, logging):
-        import time
-        logging.append("NameDB: Refreshing...")
-
-        sql = sql_raw()
-        data = json["devices"]
-        for devices in data:
-            if devices["tracked"] == "Y":
-                tracked = "1"
-            else:
-                tracked = "0"
-
-            if devices["identified"] == "Y":
-                identified = "1"
-            else:
-                identified = "0"
-
-            command = {"INSERT INTO ogn_name_db VALUES (" +
-                       "\"" + devices["device_type"] + "\"," +
-                       "\"" + devices["device_id"] + "\"," +
-                       "\"" + devices["aircraft_model"] + "\"," +
-                       "\"" + devices["registration"] + "\"," +
-                       "\"" + devices["cn"] + "\"," +
-                       tracked + "," +
-                       identified + ");"}
-            command = ''.join(list(command))
-            #logging.append(command)
-            sql.sendquery(command)
-
-        sql.commit()
-        sql.close()
-        return
-
-    def refresh(self, retries = 3):
+    def __init__(self, path):
         import requests
+        from multiprocessing import Process
+        from ground_assistant.common.load import ReadConfig, mySQL
+        config = ReadConfig(path)
+        self.sql = mySQL(config)
+        self.requests = requests
+        self.prc = Process
+        self.called = False
+        self.sql_used = False
+        self.refresh()
 
-        sql = self.sql_ready
-        sql.sendquery("DROP TABLE IF EXISTS ogn_name_db;")
-        command = {"CREATE TABLE IF NOT EXISTS ogn_name_db (" +
-                   " device_type VARCHAR(255)," +
-                   " device_id VARCHAR(255)," +
-                   " aircraft_model VARCHAR(255)," +
-                   " registration VARCHAR(255)," +
-                   " cn VARCHAR(255)," +
-                   " tracked BOOL," +
-                   " identified BOOL);"}
-        sql.sendquery(''.join(list(command)))
-        sql.commit()
+    def refresher(self):
+        #Completely reset table
+        self.sql.sendquery("DROP TABLE IF EXISTS ogn_name_db;")
+        self.sql.sendquery("CREATE TABLE ogn_name_db " \
+                           "(device_type VARCHAR(255), " \
+                           "device_id VARCHAR(255), " \
+                           "aircraft_model VARCHAR(255), " \
+                           "registration VARCHAR(255), " \
+                           "cn VARCHAR(255), " \
+                           "tracked BOOL, " \
+                           "identified BOOL);")
+        self.sql.commit()
 
-        while retries > 0:
-            retries -= 1
-            try:
-                response = requests.get("http://ddb.glidernet.org/download/?j=1")
-                if str(response) != "<Response [200]>": raise httpError("Unable to get json file from ddb.glidernet.org: " + str(response))
-                break
-            except httpError:
-                pass
-        else:
-            raise httpError("Unable to connect to ddb.glidernet.org")
+        for device in self.data: self.sql.sendquery('INSERT INTO ogn_name_db VALUES ' \
+                                              f'("{device["device_type"]}",' \
+                                              f'"{device["device_id"]}",' \
+                                              f'"{device["aircraft_model"]}",' \
+                                              f'"{device["registration"]}",' \
+                                              f'"{device["cn"]}",' \
+                                              f'{1 if device["tracked"] == "Y" else 0},' \
+                                              f'{1 if device["identified"] == "Y" else 0});')
+        self.sql.commit()
+        self.sql.close() #connection is broken now anyways
+        return
 
-        inserting_process = self.process(target=self.refresh_insertdb, args=(response.json(), self.sql_raw, self.logging))
-        inserting_process.start()
-        return inserting_process
+
+    def refresh_ndb(self, wait = False):
+        if self.sql_used: return "still refreshing" if self.refreshprc.is_alive() else "already refreshed ndb"
+        self.refresh()
+        self.refreshprc = self.prc(target=self.refresher)
+        self.refreshprc.start()
+        self.sql_used = True
+        if wait:
+            from time import sleep
+            while self.refreshprc.is_alive(): sleep(1)
+            return "refreshed ndb"
+        else: return "started refresher"
+
+    def refresh(self):
+        response = self.requests.get("http://ddb.glidernet.org/download/?j=1")
+        if response.status_code != 200: return f'connection failed with code {response.status_code}'
+        self.data = response.json()["devices"]
+        return "refreshed ndb"
+
+    def getname(self, device_id):
+        return next((sub for sub in self.data if sub["device_id"] == device_id), None)
 
     def close(self):
-        self.sql_ready.commit()
-        self.sql_ready.close()
-        return
+        try:
+            if self.refreshprc.is_alive():
+                if not self.called: self.called = True; return "refresher is still running, call close again."
+                else: self.refreshprc.kill()
+            self.refreshprc.close()
+        except AttributeError or ValueError: pass
+        return "closed ndb"
+
+def version():
+    return "namedb.py: 2.0"

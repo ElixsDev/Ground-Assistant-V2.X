@@ -1,9 +1,10 @@
 class TheFork:
-    def __init__(self, path, out = None):
+    def __init__(self, path, receive = True, load = True, ndb_refresh = True, out = None):
         import os
         from multiprocessing import Process, Pipe
         from threading import Thread, Event
         from importlib import reload, invalidate_caches
+        from ground_assistant import namedb
 
         if out == None: out = open(os.devnull, 'a')
         out.write("Startup\n")
@@ -36,8 +37,11 @@ class TheFork:
                         pass
 
             memory.close()
-
         self.memory = open(self.memorypath, "a")
+        self.ndb = namedb.NameDB()
+        if ndb_refresh: self.ndb.refresh_ndb()
+        if receive: self.load_receiver()
+        if load: self.loadall()
 
 #Handling of Data-Output:
     #Thread
@@ -112,7 +116,8 @@ class TheFork:
         for item in ids:
             if item in self.pool: continue
             p_recv, p_send = self.Pipe()
-            self.pool[item] = self.Process(target=self.plugins[item].main, args=(p_recv, self.path,))
+            self.pool[item] = self.Process(target = self.plugins[item].main,
+                                           args = (p_recv, self.path, ndb = self.ndb.getname))
             self.pool[item].start()
             self.pipes[item] = p_send
         return f'loaded {ids}'
@@ -161,34 +166,51 @@ class TheFork:
 
 
 #Handling of Data-Input:
-    def receiver_load(self):
-        from ground_assistant.plugins.receiver import Receiver
+    def load_receiver(self, simulated = False):
+        if simulated:
+            from ground_assistant.plugins.simulator import Receiver, TestHelper
+            self.helper = TestHelper
+        else: from ground_assistant.plugins.receiver import Receiver
+
         self.receiver = Receiver(self.pipe_out, self.path)
         if not self.receiver.init(): return self.receiver.crashreport
         self.receiver.run()
         return "Receiver loaded"
 
-    def receiver_close(self):
+    def close_receiver(self):
         try:
             self.receiver.close()
             return "Receiver closed"
         except AttributeError:
             return "Receiver not loaded"
 
-    def receiver_reload(self):
-        self.receiver_close()
-        self.receiver_load()
+    def reload_receiver(self, simulated = False):
+        self.close_receiver()
+        self.load_receiver(simulated)
         return "Receiver reloaded"
 
 #Generall:
     def end(self):
-        self.receiver_close()
-        self.closeall()
+        try: self.close_receiver()
+        except Exception as ex: self.out.write(f'{str(ex)}\n')
+
+        try: self.closeall()
+        except Exception as ex: self.out.write(f'{str(ex)}\n')
 
         self.kill.set()
         self.pipe_out.send("") #If there are no incomming beacons, the loop won't check the event
         if self.dstthread.is_alive(): self.dstthread.join(5)
         if self.dstthread.is_alive(): self.out.write("failed joining thread\n")
+
+        w = 0
+        if self.ndb.refreshprc.is_alive(): self.out.write("Waiting for ndb refresher")
+        while self.ndb.refreshprc.is_alive():
+            w += 1
+            self.out.write(".")
+            self.sleep(1)
+            if w > 10: self.ndb.refreshprc.kill()
+        self.out.write("\n")
+        self.ndb.close()
 
         self.memory.flush()
         self.memory.close()
@@ -196,3 +218,6 @@ class TheFork:
         self.out.flush()
         self.out.close()
         return "ended"
+
+def version():
+    return "forker.py: 1.0"

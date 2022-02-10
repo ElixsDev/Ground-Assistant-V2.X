@@ -1,6 +1,6 @@
 mark = "plugin_db"
 
-def main(pipe, path):
+def main(pipe, path, ndb):
     from setproctitle import setproctitle
     setproctitle(mark)
 
