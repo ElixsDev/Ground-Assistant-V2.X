@@ -58,7 +58,7 @@
     }
 </style>
 
-<div class="grid">
+<div class="grid" id="griddiv">
   <div class="nextup" style="border: green 1px solid;">
     <div id="nextupdiv">
       <p>Landing Planes:</p>
@@ -115,8 +115,9 @@
   <div class="map" style="border: green 1px solid;">
     <div id="leafletmap"></div>
     <script src="scripts/mapscript.js"></script>
+    <script src="lib/leaflet-rotatedmarker/leaflet.rotatedMarker.js"></script>
   </div>
 </div>
 
 <script src="scripts/loader.js"></script>
-<script src="scripts/sockettest.js"></script>
+<script src="scripts/wss.js"></script>

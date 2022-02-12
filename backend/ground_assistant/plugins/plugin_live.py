@@ -21,7 +21,7 @@ def main(pipe, path, ndb):
         got_parameter = PlaneHandler.decode(code)
         if not code in openthreads.keys():
             #optionally add stdout to get some info
-            openthreads[code] = Thread(target=handler.datathread, args=(p_send, flag, 5, got_parameter, code), name = code)
+            openthreads[code] = Thread(target=handler.datathread, args=(p_send, flag, 1, got_parameter, code), name = code)
             openthreads[code].start()
         return
 
@@ -67,4 +67,4 @@ def main(pipe, path, ndb):
         for item in openthreads: openthreads[item].join()
         openthreads["Trigger"] = "Trigger" #In case no thread was spawned
         radarthread.join()
-    return
+        return

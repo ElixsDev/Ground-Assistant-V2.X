@@ -2,6 +2,9 @@ class NewPlane:
     def __init__(self, beacon, airports, ndb):
         self.airports = airports
         self.ndb = ndb
+        self.types = ["?", "(Moto-) Glider", "Tow Plane", "Helicopter", "Parachute", "Drop Plane", "Hang-Glider",
+                      "Para-Glider", "Powered Aircraft", "Jet Aircraft", {"A": "UFO", "B": "Balloon",
+                      "C": "Airship", "D": "UAV", "E": "Ground-Support", "F": "Static Object"}]
         self.categorys = {"geo": None}
         self.update(beacon)
 
@@ -15,10 +18,6 @@ class NewPlane:
                           "receiver_name": beacon["receiver_name"] if "receiver_name" in beacon.keys() else None,
                           "relay": beacon["relay"] if "relay" in beacon.keys() else None,
                           "dstcall": beacon["dstcall"] if "dstcall" in beacon.keys() else None}
-
-        self.identity = {"address": beacon["address"] if "address" in beacon.keys() else None,
-                         "aircraft_type": beacon["aircraft_type"] if "aircraft_type" in beacon.keys() else None,
-                         "name": beacon["name"] if "name" in beacon.keys() else None}
 
         self.position = {"latitude": beacon["latitude"] if "latitude" in beacon.keys() else None,
                          "longitude": beacon["longitude"] if "longitude" in beacon.keys() else None}
@@ -39,14 +38,25 @@ class NewPlane:
                        "gps_quality": [beacon["gps_quality"]["vertical"],
                                        beacon["gps_quality"]["horizontal"]] if "gps_quality" in beacon.keys() else None}
 
-        self.others = {"symboltable": beacon["symboltable"] if "symboltable" in beacon.keys() else None,
-                       "symbolcode": beacon["symbolcode"] if "symbolcode" in beacon.keys() else None,
-                       "comment": beacon["comment"] if "comment" in beacon.keys() else None,
+        self.others = {"comment": beacon["comment"] if "comment" in beacon.keys() else None,
                        "track": beacon["track"] if "track" in beacon.keys() else None}
 
         self.error_count = beacon["error_count"] if "error_count" in beacon.keys() else None
 
-        self.planedata = self.ndb(self.identity["address"])
+        self.identity = {"address": beacon["address"] if "address" in beacon.keys() else None,
+                         "aircraft_type": beacon["aircraft_type"] if "aircraft_type" in beacon.keys() else None,
+                         "name": beacon["name"] if "name" in beacon.keys() else None}
+
+        device_id = beacon["address"]
+        planedata = self.ndb(device_id)
+        self.identity = {"device_id": device_id}
+
+        type = beacon["aircraft_type"]
+        self.identity["aircraft_type"] = self.types[type] if isinstance(type, int) else self.types[10][type]
+        self.identity["aircraft_model"] = planedata["aircraft_model"]
+        self.identity["registration"] = planedata["registration"]
+        self.identity["cn"] = planedata["cn"]
+        self.identity["identified"] = True if planedata["identified"] == "Y" else False
 
         #Categorize:
         airport = self.airports.find(self.position, self.categorys["geo"])
@@ -63,8 +73,8 @@ class NewPlane:
         else: self.categorys = {"geo": None, "alt": "away"}
 
         self.relevant = {"receiver_name": self.aprs_info["receiver_name"],
-                         "timestamp": self.timestamps["timestamp"]}
-        self.relevant.update(self.planedata)
+                         "timestamp": str(self.timestamps["timestamp"])}
+
         self.relevant.update(self.identity)
         self.relevant.update(self.position)
         self.relevant.update(self.vectors)

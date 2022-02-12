@@ -10,8 +10,20 @@ var elements = {
     "3": {name: "D-9930", coordinates: [49.4768, 8.5155], height: 300, speed: 88}
 }
 
-initializeMarkers();
-
 updateNextUp();
 
-updateMarker();
+function setOutOfOrder(what = "all") {
+    parent = document.getElementById("main");
+    blur = document.createElement("style");
+    if (what == "all") {
+        blur.innerHTML = `.stats { filter: blur(5px); }
+                          .nextup { filter: blur(5px); }
+                          .map { filter: blur(5px); }`;
+    } else {
+        blur.innerHTML = `.${what} { filter: blur(5px); }`;
+    }
+    parent.appendChild(blur);
+}
+
+setOutOfOrder("stats");
+//setOutOfOrder("nextup");

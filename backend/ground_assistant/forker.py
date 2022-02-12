@@ -1,14 +1,16 @@
 class TheFork:
     def __init__(self, path, receive = True, load = True, ndb_refresh = True, out = None):
         import os
+        from importlib import reload, invalidate_caches
         from multiprocessing import Process, Pipe
         from threading import Thread, Event
-        from importlib import reload, invalidate_caches
+        from time import sleep
         from ground_assistant import namedb
 
         if out == None: out = open(os.devnull, 'a')
         out.write("Startup\n")
 
+        self.sleep = sleep
         self.Process = Process
         self.Pipe = Pipe
         self.recache = invalidate_caches
@@ -38,7 +40,7 @@ class TheFork:
 
             memory.close()
         self.memory = open(self.memorypath, "a")
-        self.ndb = namedb.NameDB()
+        self.ndb = namedb.NameDB(path)
         if ndb_refresh: self.ndb.refresh_ndb()
         if receive: self.load_receiver()
         if load: self.loadall()
@@ -117,7 +119,7 @@ class TheFork:
             if item in self.pool: continue
             p_recv, p_send = self.Pipe()
             self.pool[item] = self.Process(target = self.plugins[item].main,
-                                           args = (p_recv, self.path, ndb = self.ndb.getname))
+                                           args = (p_recv, self.path, self.ndb.getname))
             self.pool[item].start()
             self.pipes[item] = p_send
         return f'loaded {ids}'
@@ -139,16 +141,14 @@ class TheFork:
                 ids = f'none, {ids[0]} is not loaded'
                 continue
 
-            try:
-                self.pipe_out.send(f'KILL{item}')
-            except:
-                pass
-            else:
-                self.pool[item].join()
-            finally:
-                self.pipes.pop(item)
-                self.pool[item].close()
-                self.pool.pop(item)
+            self.pipes.pop(item)
+            self.pipe_out.send(f'KILL{item}')
+            self.pool[item].join(2)
+            self.pool[item].kill()
+            if self.pool[item].is_alive(): self.sleep(1)
+            self.pool[item].close()
+            self.pool.pop(item)
+
         return f'closed {ids}'
 
     #Shortcuts:

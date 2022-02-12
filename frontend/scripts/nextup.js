@@ -7,7 +7,6 @@ function fileExists(urlToFile) {
     else { return true; }
 }
 
-
 function updateNextUp() {
     for (k in elements) {
         imgLink ='images/planes/' + elements[k].name + '.png';

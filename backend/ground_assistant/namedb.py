@@ -56,7 +56,10 @@ class NameDB:
         return "refreshed ndb"
 
     def getname(self, device_id):
-        return next((sub for sub in self.data if sub["device_id"] == device_id), None)
+        empty = {"device_type": None, "device_id": device_id,
+                 "aircraft_model": None, "registration": None,
+                 "cn": None, "tracked": 0, "identified": 0}
+        return next((sub for sub in self.data if sub["device_id"] == device_id), empty)
 
     def close(self):
         try:
